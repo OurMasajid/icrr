@@ -113,6 +113,28 @@
       </div>
     </div>
 
+    <!-- Friday Jummah Banner — visible on Fridays from Fajr to Asr -->
+    <div id="jummahHeroBanner" style="display:none" class="jummah-hero-card mb-6">
+      <div class="jummah-hero-header">
+        <span class="chip chip-gold">Today is Jumuʿah</span>
+        <h3 class="font-display text-2xl font-bold text-white mt-2">Jumuʿah Prayer</h3>
+      </div>
+      <div class="jummah-hero-body">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="rounded-xl bg-white/10 px-4 py-3 text-center">
+            <p class="text-xs font-bold uppercase tracking-wider text-emerald-200">1st Jumuʿah</p>
+            <p class="font-display text-2xl text-white mt-1">1:40 PM</p>
+          </div>
+          <div class="rounded-xl bg-white/10 px-4 py-3 text-center">
+            <p class="text-xs font-bold uppercase tracking-wider text-emerald-200">2nd Jumuʿah</p>
+            <p class="font-display text-2xl text-white mt-1">2:30 PM</p>
+          </div>
+        </div>
+        <p class="text-emerald-50/90 text-sm mt-3"><strong>Khutbah:</strong> "So, Where Are You Going?" (81:26) — Mufti Anwer Imam</p>
+        <a href="https://us.mohid.co/tx/austin/icrr/masjid/online/donation" target="_blank" rel="noopener" class="btn btn-gold mt-3 w-full justify-center">Virtual Friday Donation Box</a>
+      </div>
+    </div>
+
     <!-- Prayer times card -->
     <div class="prayer-card text-slate-900">
       <div class="prayer-card-head">
@@ -382,6 +404,17 @@
   const menu = document.getElementById('mobileMenu');
   btn && btn.addEventListener('click', () => menu.classList.toggle('open'));
   menu && menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
+</script>
+<script>
+(function() {
+  var now = new Date();
+  var day = now.getDay();
+  var h = now.getHours();
+  if (day === 5 && h >= 5 && h < 18) {
+    var el = document.getElementById('jummahHeroBanner');
+    if (el) el.style.display = '';
+  }
+})();
 </script>
 <script src="prayer-times.js"></script>
 <script src="events.js"></script>
