@@ -1,6 +1,13 @@
 {
   "private": true,
+  "scripts": {
+    "build": "npx tailwindcss -i src/input.css -o styles.css --minify",
+    "dev": "npx tailwindcss -i src/input.css -o styles.css --watch"
+  },
   "dependencies": {
     "@netlify/blobs": "^8.1.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
   }
 }
