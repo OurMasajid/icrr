@@ -89,18 +89,19 @@
       <div class="card">
         <h2 class="font-display text-2xl">Send us a message</h2>
         <p class="text-slate-600 mt-2 text-sm">Whether you have a question, need a service, or want to volunteer — we read every message.</p>
-        <form class="mt-6 grid sm:grid-cols-2 gap-4">
+        <form name="contact" method="POST" data-netlify="true" class="mt-6 grid sm:grid-cols-2 gap-4">
+          <input type="hidden" name="form-name" value="contact" />
           <div class="sm:col-span-1">
             <label class="text-sm font-medium text-slate-700">Name</label>
-            <input class="contact-input mt-1.5" type="text" placeholder="Your name" />
+            <input name="name" class="contact-input mt-1.5" type="text" placeholder="Your name" required />
           </div>
           <div class="sm:col-span-1">
             <label class="text-sm font-medium text-slate-700">Email</label>
-            <input class="contact-input mt-1.5" type="email" placeholder="you@example.com" />
+            <input name="email" class="contact-input mt-1.5" type="email" placeholder="you@example.com" required />
           </div>
           <div class="sm:col-span-2">
             <label class="text-sm font-medium text-slate-700">Subject</label>
-            <select class="contact-input mt-1.5">
+            <select name="subject" class="contact-input mt-1.5">
               <option>General inquiry</option>
               <option>Volunteer</option>
               <option>Nikāḥ service</option>
@@ -111,7 +112,7 @@
           </div>
           <div class="sm:col-span-2">
             <label class="text-sm font-medium text-slate-700">Message</label>
-            <textarea class="contact-input mt-1.5" rows="6" placeholder="How can we help?"></textarea>
+            <textarea name="message" class="contact-input mt-1.5" rows="6" placeholder="How can we help?" required></textarea>
           </div>
           <div class="sm:col-span-2 flex items-center justify-between gap-3">
             <p class="text-xs text-slate-500">We'll never share your information.</p>
@@ -149,6 +150,11 @@
   <div class="max-w-7xl mx-auto px-4 mt-12 pt-6 border-t border-white/10 text-xs text-slate-500">© 2026 Islamic Center of Round Rock.</div>
 </footer>
 
-<script>const btn=document.getElementById('menuBtn');const menu=document.getElementById('mobileMenu');btn&&btn.addEventListener('click',()=>menu.classList.toggle('open'));</script>
+<script>
+const btn=document.getElementById('menuBtn');
+const menu=document.getElementById('mobileMenu');
+btn&&btn.addEventListener('click',()=>menu.classList.toggle('open'));
+menu&&menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.classList.remove('open')));
+</script>
 </body>
 </html>

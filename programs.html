@@ -144,6 +144,11 @@
   <div class="max-w-7xl mx-auto px-4 mt-12 pt-6 border-t border-white/10 text-xs text-slate-500">© 2026 Islamic Center of Round Rock.</div>
 </footer>
 
-<script>const btn=document.getElementById('menuBtn');const menu=document.getElementById('mobileMenu');btn&&btn.addEventListener('click',()=>menu.classList.toggle('open'));</script>
+<script>
+const btn=document.getElementById('menuBtn');
+const menu=document.getElementById('mobileMenu');
+btn&&btn.addEventListener('click',()=>menu.classList.toggle('open'));
+menu&&menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.classList.remove('open')));
+</script>
 </body>
 </html>
