@@ -79,7 +79,7 @@
 
 <!-- Hero -->
 <section class="hero">
-  <div class="hero-inner max-w-7xl mx-auto px-4 py-20 lg:py-28 grid lg:grid-cols-2 gap-12 items-center">
+  <div class="hero-inner max-w-7xl mx-auto px-4 py-20 lg:py-28">
     <div>
       <span class="chip chip-gold">Assalāmu ʿalaykum wa raḥmatullāh</span>
       <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold mt-5 leading-tight">
@@ -112,9 +112,15 @@
         <p class="text-xs text-emerald-100/70 mt-2">— Surah At-Tawbah 9:18</p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- Prayer Times & Jummah -->
+<section class="py-10">
+  <div class="max-w-5xl mx-auto px-4 flex flex-col lg:flex-row justify-center items-start gap-8">
 
     <!-- Friday Jummah Banner — visible on Fridays from Fajr to Asr -->
-    <div id="jummahHeroBanner" style="display:none" class="jummah-hero-card mb-6">
+    <div id="jummahHeroBanner" style="display:none" class="jummah-hero-card w-full lg:max-w-lg">
       <div class="jummah-hero-header text-center">
         <span class="chip chip-gold">Today is Jumuʿah</span>
         <p class="uppercase text-xs tracking-widest text-emerald-200 mt-3">This Week's Khutbah</p>
@@ -138,7 +144,7 @@
     </div>
 
     <!-- Prayer times card -->
-    <div class="prayer-card text-slate-900">
+    <div class="prayer-card text-slate-900 w-full lg:max-w-lg">
       <div class="prayer-card-head">
         <div>
           <p class="text-xs uppercase tracking-widest text-emerald-100/80" data-today-label>Today · July 6, 2026</p>
@@ -188,6 +194,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </section>
 
@@ -204,7 +211,7 @@
 
     <div class="events-preview-scroll">
 
-      <div class="event-flyer-card">
+      <div class="event-flyer-card" data-event-date="2026-07-10,2026-07-11">
         <a href="events.html" class="event-flyer-img-wrap">
           <img src="images/unnamed (6).png" alt="Dawah & Community Engagement Weekend — July 10-11, 2026" loading="lazy" />
         </a>
@@ -215,7 +222,7 @@
         </div>
       </div>
 
-      <div class="event-flyer-card">
+      <div class="event-flyer-card" data-event-date="2026-07-11">
         <a href="events.html" class="event-flyer-img-wrap">
           <img src="images/unnamed (5).png" alt="FIFA World Cup Watch Party — July 11, 2026" loading="lazy" />
         </a>
@@ -226,7 +233,7 @@
         </div>
       </div>
 
-      <div class="event-flyer-card">
+      <div class="event-flyer-card" data-event-date="2026-07-11">
         <a href="events.html" class="event-flyer-img-wrap">
           <img src="images/unnamed (7).png" alt="Brisket & Bridges Open House — July 11" loading="lazy" />
         </a>
@@ -237,7 +244,7 @@
         </div>
       </div>
 
-      <div class="event-flyer-card">
+      <div class="event-flyer-card" data-event-day="5">
         <a href="events.html" class="event-flyer-img-wrap">
           <img src="images/unnamed (1).png" alt="Youth Hangouts Sahaba Series — Every Friday" loading="lazy" />
         </a>
@@ -455,8 +462,19 @@
   var h = now.getHours();
   if (day === 5 && h >= 5 && h < 18) {
     var el = document.getElementById('jummahHeroBanner');
-    if (el) el.style.display = '';
+    if (el) { el.style.display = ''; el.classList.add('jummah-pulse'); }
   }
+  var todayISO = now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+    String(now.getDate()).padStart(2, '0');
+  document.querySelectorAll('[data-event-date]').forEach(function(card) {
+    if (card.dataset.eventDate.split(',').indexOf(todayISO) !== -1)
+      card.classList.add('today-event');
+  });
+  document.querySelectorAll('[data-event-day]').forEach(function(card) {
+    if (parseInt(card.dataset.eventDay, 10) === day)
+      card.classList.add('today-event');
+  });
 })();
 </script>
 <script src="prayer-times.js"></script>

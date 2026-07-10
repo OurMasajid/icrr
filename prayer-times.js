@@ -77,6 +77,72 @@
     }).join('');
   }
 
+  function parseTime(str) {
+    var m = (str || '').match(/(\d+):(\d+)\s*(AM|PM)/i);
+    if (!m) return null;
+    var h = parseInt(m[1], 10);
+    var min = parseInt(m[2], 10);
+    var ap = m[3].toUpperCase();
+    if (ap === 'PM' && h !== 12) h += 12;
+    if (ap === 'AM' && h === 12) h = 0;
+    return h * 60 + min;
+  }
+
+  function highlightUpcomingPrayer(day) {
+    var now = new Date();
+    var nowMin = now.getHours() * 60 + now.getMinutes();
+    var names = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+
+    names.forEach(function (name) {
+      var prayer = day.prayers[name];
+      if (!prayer || !prayer.starts) return;
+      var adhanMin = parseTime(prayer.starts);
+      if (adhanMin === null) return;
+      var diff = adhanMin - nowMin;
+      if (diff >= 0 && diff <= 15) {
+        var k = key(name);
+        document.querySelectorAll('.prayer-row').forEach(function (row) {
+          var nameEl = row.querySelector('.name');
+          if (nameEl && nameEl.textContent.trim() === k) row.classList.add('upcoming');
+        });
+      }
+    });
+  }
+
+  function checkTomorrowChanges(days) {
+    if (days.length < 2) return;
+    var today = days[0].prayers;
+    var tomorrow = days[1].prayers;
+    var names = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    var changes = [];
+
+    names.forEach(function (name) {
+      var t = today[name];
+      var m = tomorrow[name];
+      if (!t || !m) return;
+      if (t.iqamah && m.iqamah && t.iqamah !== m.iqamah) {
+        changes.push({ name: (name === 'Dhuhr' ? 'Zuhr' : name), from: t.iqamah, to: m.iqamah });
+      }
+    });
+
+    if (!changes.length) return;
+
+    var html = '<div class="iqamah-change-alert">' +
+      '<div class="iqamah-change-alert-inner">' +
+      '<p class="iqamah-change-title">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+      'Iqamah times changing tomorrow</p>' +
+      '<div class="iqamah-change-list">' +
+      changes.map(function (c) {
+        return '<span class="iqamah-change-item"><strong>' + c.name + '</strong> ' +
+          c.from + ' <span class="iqamah-change-arrow">→</span> ' + c.to + '</span>';
+      }).join('') +
+      '</div></div></div>';
+
+    var nav = document.querySelector('.site-nav');
+    if (nav) nav.insertAdjacentHTML('afterend', html);
+  }
+
   async function load() {
     setDateLabel();
     rollDates();
@@ -88,6 +154,8 @@
 
       applyToday(data.days[0]);
       buildWeekTable(data.days);
+      highlightUpcomingPrayer(data.days[0]);
+      checkTomorrowChanges(data.days);
     } catch (e) {
       if (window.console) console.warn('Prayer times: live fetch failed, using fallback.', e);
     }

@@ -57,10 +57,17 @@
       '</div>';
   }
 
+  function isToday(iso) {
+    var n = new Date();
+    var d = asDate(iso);
+    return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate();
+  }
+
   function cardHTML(e) {
     var gold = /youth/i.test(e.tag) ? ' chip-gold' : '';
+    var todayCls = isToday(e.date) ? ' today-event' : '';
     return '' +
-      '<article class="card">' +
+      '<article class="card' + todayCls + '">' +
         '<div class="flex items-center justify-between">' +
           '<span class="chip' + gold + '">' + esc(e.tag) + '</span>' +
           '<span class="text-xs text-slate-500">' + fmtShort(e.date) + ' · ' + esc(e.time) + '</span>' +

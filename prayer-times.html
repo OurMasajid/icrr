@@ -185,7 +185,7 @@ menu&&menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.
   var h = now.getHours();
   if (day === 5 && h >= 5 && h < 18) {
     var el = document.getElementById('jummahBanner');
-    if (el) el.style.display = '';
+    if (el) { el.style.display = ''; el.classList.add('jummah-pulse'); }
   }
 })();
 </script>
