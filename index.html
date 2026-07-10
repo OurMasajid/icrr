@@ -374,6 +374,7 @@
   const btn = document.getElementById('menuBtn');
   const menu = document.getElementById('mobileMenu');
   btn && btn.addEventListener('click', () => menu.classList.toggle('open'));
+  menu && menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
 </script>
 <script src="prayer-times.js"></script>
 <script src="events.js"></script>
