@@ -4,3 +4,6 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+
+# Unhashed dev output from `npm run dev` — production build emits hashed files instead
+/styles.css
