@@ -90,25 +90,28 @@
     return h * 60 + min;
   }
 
-  function highlightUpcomingPrayer(day) {
+  // Reads the times already rendered in the DOM (live or static fallback)
+  // so the next-prayer highlight is correct even if the live fetch fails.
+  function highlightNextPrayer() {
     var now = new Date();
     var nowMin = now.getHours() * 60 + now.getMinutes();
-    var names = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
-    names.forEach(function (name) {
-      var prayer = day.prayers[name];
-      if (!prayer || !prayer.starts) return;
-      var adhanMin = parseTime(prayer.starts);
+    var rows = document.querySelectorAll('.prayer-row');
+    rows.forEach(function (row) { row.classList.remove('highlight', 'upcoming'); });
+
+    var best = null;
+    rows.forEach(function (row) {
+      var timeEl = row.querySelector('.time[data-adhan]');
+      if (!timeEl) return;
+      var adhanMin = parseTime(timeEl.textContent);
       if (adhanMin === null) return;
       var diff = adhanMin - nowMin;
-      if (diff >= 0 && diff <= 15) {
-        var k = key(name);
-        document.querySelectorAll('.prayer-row').forEach(function (row) {
-          var nameEl = row.querySelector('.name');
-          if (nameEl && nameEl.textContent.trim() === k) row.classList.add('upcoming');
-        });
-      }
+      if (diff >= 0 && (!best || diff < best.diff)) best = { row: row, diff: diff };
     });
+
+    if (!best) return;
+    best.row.classList.add('highlight');
+    if (best.diff <= 15) best.row.classList.add('upcoming');
   }
 
   function checkTomorrowChanges(days) {
@@ -156,10 +159,11 @@
 
       applyToday(data.days[0]);
       buildWeekTable(data.days);
-      highlightUpcomingPrayer(data.days[0]);
       checkTomorrowChanges(data.days);
     } catch (e) {
       if (window.console) console.warn('Prayer times: live fetch failed, using fallback.', e);
+    } finally {
+      highlightNextPrayer();
     }
   }
 
