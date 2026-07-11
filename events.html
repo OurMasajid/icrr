@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" />
-<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="styles.53bdcbba34.css" />
 <link rel="manifest" href="manifest.json" />
 <link rel="icon" type="image/png" href="images/logo.png" />
 <link rel="apple-touch-icon" href="images/logo.png" />
@@ -105,7 +105,7 @@
 
     <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="eventGallery">
 
-      <div class="event-flyer-card">
+      <div class="event-flyer-card" data-event-date="2026-07-10,2026-07-11">
         <a href="images/unnamed (6).png" target="_blank" class="event-flyer-img-wrap">
           <img src="images/unnamed (6).png" alt="Dawah & Community Engagement Weekend — July 10-11, 2026" loading="lazy" />
         </a>
@@ -116,7 +116,7 @@
         </div>
       </div>
 
-      <div class="event-flyer-card">
+      <div class="event-flyer-card" data-event-date="2026-07-11">
         <a href="images/unnamed (5).png" target="_blank" class="event-flyer-img-wrap">
           <img src="images/unnamed (5).png" alt="FIFA World Cup Watch Party — Argentina vs Switzerland, July 11, 2026" loading="lazy" />
         </a>
@@ -127,7 +127,7 @@
         </div>
       </div>
 
-      <div class="event-flyer-card">
+      <div class="event-flyer-card" data-event-date="2026-07-11">
         <a href="images/unnamed (7).png" target="_blank" class="event-flyer-img-wrap">
           <img src="images/unnamed (7).png" alt="Brisket & Bridges Open House — Meet Your Muslim Neighbors, July 11" loading="lazy" />
         </a>
@@ -138,7 +138,7 @@
         </div>
       </div>
 
-      <div class="event-flyer-card">
+      <div class="event-flyer-card" data-event-until="2026-07-23">
         <a href="images/unnamed (8).png" target="_blank" class="event-flyer-img-wrap">
           <img src="images/unnamed (8).png" alt="ICRR Summer Camp 2026 — June 8 to July 23" loading="lazy" />
         </a>
@@ -149,7 +149,7 @@
         </div>
       </div>
 
-      <div class="event-flyer-card">
+      <div class="event-flyer-card" data-event-date="2026-07-18">
         <a href="images/unnamed (3).png" target="_blank" class="event-flyer-img-wrap">
           <img src="images/unnamed (3).png" alt="Sisters' Workshop & Halaqah Series — Bi-weekly Saturdays" loading="lazy" />
         </a>
@@ -160,7 +160,7 @@
         </div>
       </div>
 
-      <div class="event-flyer-card">
+      <div class="event-flyer-card" data-event-date="2026-07-18">
         <a href="images/unnamed (2).png" target="_blank" class="event-flyer-img-wrap">
           <img src="images/unnamed (2).png" alt="Monthly Family Potluck for Muslims — Every 3rd Saturday" loading="lazy" />
         </a>
@@ -171,6 +171,13 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- Previous Events (populated automatically as dated events pass) -->
+    <div id="pastEventsSection" style="display:none">
+      <h2 class="section-title mt-20">Previous Events</h2>
+      <p class="mt-3 text-slate-600 max-w-2xl">A look back at what we've hosted recently.</p>
+      <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="pastEventsGallery"></div>
     </div>
 
     <!-- Weekly / Recurring Programs -->
@@ -234,6 +241,49 @@ const btn=document.getElementById('menuBtn');
 const menu=document.getElementById('mobileMenu');
 btn&&btn.addEventListener('click',()=>menu.classList.toggle('open'));
 menu&&menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.classList.remove('open')));
+</script>
+<script>
+// Sorts dated event cards soonest-first and moves anything whose date has
+// passed into the Previous Events section. Cards with no date attribute
+// (recurring weekly programs) are left in place, untouched.
+(function () {
+  function parseISO(s) { return new Date(s + 'T00:00:00'); }
+
+  function lastDate(card) {
+    if (card.dataset.eventUntil) return parseISO(card.dataset.eventUntil);
+    if (card.dataset.eventDate) {
+      var dates = card.dataset.eventDate.split(',');
+      return parseISO(dates[dates.length - 1]);
+    }
+    return null;
+  }
+
+  var gallery = document.getElementById('eventGallery');
+  var pastSection = document.getElementById('pastEventsSection');
+  var pastGallery = document.getElementById('pastEventsGallery');
+  if (!gallery) return;
+
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  var cards = Array.prototype.slice.call(gallery.querySelectorAll('.event-flyer-card'));
+  var dated = cards.filter(function (c) { return lastDate(c); });
+  var undated = cards.filter(function (c) { return !lastDate(c); });
+
+  var upcoming = dated
+    .filter(function (c) { return lastDate(c) >= today; })
+    .sort(function (a, b) { return lastDate(a) - lastDate(b); });
+  var past = dated
+    .filter(function (c) { return lastDate(c) < today; })
+    .sort(function (a, b) { return lastDate(b) - lastDate(a); });
+
+  upcoming.concat(undated).forEach(function (c) { gallery.appendChild(c); });
+
+  if (past.length && pastGallery) {
+    past.forEach(function (c) { pastGallery.appendChild(c); });
+    if (pastSection) pastSection.style.display = '';
+  }
+})();
 </script>
 </body>
 </html>
