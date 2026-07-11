@@ -55,6 +55,8 @@
     if (day.jumuah && day.jumuah.length) {
       fill('[data-jumuah]', day.jumuah.map(function (j) { return j.time; }).join(' · '));
     }
+
+    if (window.positionJummahBanner) window.positionJummahBanner();
   }
 
   function buildWeekTable(days) {
