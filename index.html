@@ -266,6 +266,39 @@
         </div>
       </div>
 
+      <div class="event-flyer-card" data-event-until="2026-07-23">
+        <a href="events.html" class="event-flyer-img-wrap">
+          <img src="images/unnamed (8).png" alt="ICRR Summer Camp 2026 — June 8 to July 23" loading="lazy" />
+        </a>
+        <div class="event-flyer-info">
+          <span class="chip chip-gold">Ongoing</span>
+          <h3 class="font-display text-lg mt-2">ICRR Summer Camp 2026</h3>
+          <p class="text-sm text-slate-500 mt-1">Jun 8 – Jul 23 · Ages 6–13</p>
+        </div>
+      </div>
+
+      <div class="event-flyer-card" data-event-date="2026-07-18">
+        <a href="events.html" class="event-flyer-img-wrap">
+          <img src="images/unnamed (3).png" alt="Sisters' Workshop &amp; Halaqah Series — Bi-weekly Saturdays" loading="lazy" />
+        </a>
+        <div class="event-flyer-info">
+          <span class="chip">Sisters</span>
+          <h3 class="font-display text-lg mt-2">Sisters' Workshop &amp; Halaqah</h3>
+          <p class="text-sm text-slate-500 mt-1">Next: Sat, Jul 18 · 11 AM</p>
+        </div>
+      </div>
+
+      <div class="event-flyer-card" data-event-date="2026-07-18">
+        <a href="events.html" class="event-flyer-img-wrap">
+          <img src="images/unnamed (2).png" alt="Monthly Family Potluck — Every 3rd Saturday" loading="lazy" />
+        </a>
+        <div class="event-flyer-info">
+          <span class="chip">Monthly</span>
+          <h3 class="font-display text-lg mt-2">Monthly Family Potluck</h3>
+          <p class="text-sm text-slate-500 mt-1">Sat, Jul 18 · 3rd Saturday</p>
+        </div>
+      </div>
+
       <div class="event-flyer-card" data-event-day="5">
         <a href="events.html" class="event-flyer-img-wrap">
           <img src="images/unnamed (1).png" alt="Youth Hangouts Sahaba Series — Every Friday" loading="lazy" />
@@ -529,6 +562,39 @@
     if (parseInt(card.dataset.eventDay, 10) === day)
       card.classList.add('today-event');
   });
+
+  // Sort the homepage events preview soonest-first, same convention as
+  // events.html. Past dated cards are dropped from this preview (there's no
+  // "Previous Events" section here); undated/recurring cards are left after.
+  (function sortEventsPreview() {
+    function parseISO(s) { return new Date(s + 'T00:00:00'); }
+    function lastDate(card) {
+      if (card.dataset.eventUntil) return parseISO(card.dataset.eventUntil);
+      if (card.dataset.eventDate) {
+        var dates = card.dataset.eventDate.split(',');
+        return parseISO(dates[dates.length - 1]);
+      }
+      return null;
+    }
+
+    var preview = document.querySelector('.events-preview-scroll');
+    if (!preview) return;
+
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    var cards = Array.prototype.slice.call(preview.querySelectorAll('.event-flyer-card'));
+    var dated = cards.filter(function (c) { return lastDate(c); });
+    var undated = cards.filter(function (c) { return !lastDate(c); });
+
+    var upcoming = dated
+      .filter(function (c) { return lastDate(c) >= today; })
+      .sort(function (a, b) { return lastDate(a) - lastDate(b); });
+    var past = dated.filter(function (c) { return lastDate(c) < today; });
+
+    upcoming.concat(undated).forEach(function (c) { preview.appendChild(c); });
+    past.forEach(function (c) { c.remove(); });
+  })();
 })();
 </script>
 <script src="prayer-times.6803e23db5.js"></script>
