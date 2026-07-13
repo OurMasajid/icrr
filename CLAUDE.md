@@ -1,29 +1,57 @@
-# Adding an event
+# Events & Jumu'ah content is CMS-managed — don't hand-edit the cards
 
-`events.html`'s "Upcoming Events & Programs" grid (`#eventGallery`) auto-sorts
-soonest-first and moves anything past its date into the "Previous Events"
-section at the bottom — see the script near the end of `events.html`. This
-only works if every dated card carries the right attribute:
+Event cards (both `events.html`'s grids and the homepage's
+`.events-preview-scroll` preview) and the Jumu'ah/khutbah info (on `index.html`
+and `prayer-times.html`) are no longer hand-authored HTML. They're generated at
+build time by `scripts/build.js` from:
 
-- One-off or multi-day event: `data-event-date="2026-07-11"`, or
-  `data-event-date="2026-07-10,2026-07-11"` for multi-day (comma-separated,
-  no spaces). The card is archived once the **last** listed date passes.
-- Ongoing/ranged event (e.g. a summer camp): `data-event-until="2026-07-23"`
-  — the card stays in "Upcoming" until that end date passes.
-- Recurring items with a specific next occurrence (e.g. "Next: Jul 18"
-  workshops, "every 3rd Saturday" potlucks): use `data-event-date` with that
-  next date, and **bump it manually each cycle** — there's no recurrence
-  engine, just a single next-occurrence date.
+- `content/events/*.yml` — one file per event/program.
+- `content/jummah.yml` — the single Jumu'ah info record.
 
-Cards with none of these attributes are left alone and never archived — that's
-intentional for the "Weekly Programs" section below the grid (Seerah, Youth
-Hangouts, Fajr Breakfast), since those are perpetual, not one-off events.
-Don't add date attributes there.
+**To add, edit, or remove an event: edit/add/delete a file under
+`content/events/`, then run `npm run build`.** Don't add or edit
+`.event-flyer-card` markup directly in `events.html` or `index.html` — it
+lives between `<!-- CMS:EVENTS_GALLERY:START/END -->`,
+`<!-- CMS:EVENTS_WEEKLY:START/END -->`, and
+`<!-- CMS:EVENTS_HOMEPAGE:START/END -->` marker comments and gets overwritten
+by the build. Same for the Jumu'ah fields — they live in `<span
+data-cms="jummah.*">` spans; edit `content/jummah.yml` instead.
 
-If the new event should also appear in the homepage's "Upcoming Events
-Preview" (`index.html`, `.events-preview-scroll`), add a matching card there
-too with the same `data-event-date` — that page only uses it to add a
-`today-event` highlight glow, not sorting/archiving.
+Non-developers can edit the same files through the Decap CMS at `/admin`
+(GitHub login) instead of touching YAML directly.
 
-`data-event-day="N"` (0=Sun…6=Sat) is a separate convention used on
-`index.html` for purely weekly recurring cards with no specific date.
+## Event fields (`content/events/<slug>.yml`)
+
+- `title`, `detail` — card heading and the line underneath.
+- `image` — path under `images/`.
+- `chip`, `chip_style` (`default` | `gold`) — the small badge on the card.
+- `section` — `gallery` (one-off/ongoing, shown in "Upcoming Events &
+  Programs") or `weekly` (perpetual, shown in "Weekly Programs").
+- `schedule` — `dated`, `ongoing`, or `none`:
+  - `dated` requires `dates` — one ISO date, or comma-separated ISO dates for
+    a multi-day event (e.g. `2026-07-10,2026-07-11`). The card archives once
+    the **last** listed date passes.
+  - `ongoing` requires `until` (ISO date) — stays "Upcoming" until that date
+    passes.
+  - `none` — perpetual, never archived. Used for the "Weekly Programs"
+    section. Recurring items with a specific next occurrence (e.g. "Next: Jul
+    18" workshops, "every 3rd Saturday" potlucks) should use `dated` instead,
+    with someone **bumping `dates` manually each cycle** — there's no
+    recurrence engine, just a single next-occurrence date.
+- `show_on_homepage` — also render this card in the homepage preview.
+- `homepage_day` (0=Sun…6=Sat) — only for `schedule: none` cards shown on the
+  homepage; adds the weekday `today-event` highlight glow there (mirrors the
+  old `data-event-day` convention).
+- `order` — lower sorts first in the pre-JS/initial order. The runtime script
+  in `events.html`/`index.html` still re-sorts dated cards soonest-first and
+  drops/archives past ones at page load regardless of this field.
+
+The build (`scripts/build.js`) validates `dates`/`until`/`section` and fails
+loudly with the offending filename if something's missing or malformed —
+better to catch a bad CMS entry at build time than ship broken markup.
+
+## Jumu'ah fields (`content/jummah.yml`)
+
+`khutbah_title`, `khutbah_reference`, `khateeb`, `first_time`, `second_time` —
+injected into the banner on `index.html` and both Jumu'ah blocks on
+`prayer-times.html`.
