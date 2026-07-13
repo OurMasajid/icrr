@@ -1,0 +1,89 @@
+backend:
+  name: github
+  repo: OurMasajid/icrr
+  branch: main
+
+publish_mode: simple
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "events"
+    label: "Events & Programs"
+    description: "One-off events and weekly programs shown on the Events page. Items with \"Show on homepage preview\" checked also appear in the homepage's Upcoming Events preview."
+    folder: "content/events"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Detail line", name: "detail", widget: "string", hint: "Shown under the title, e.g. \"Sat, July 11 · 8:00 PM · Potluck\"" }
+      - { label: "Flyer image", name: "image", widget: "image" }
+      - { label: "Chip label", name: "chip", widget: "string", hint: "Small badge text, e.g. \"This Saturday\", \"Youth\", \"Ongoing\"" }
+      - label: "Chip style"
+        name: "chip_style"
+        widget: "select"
+        options: ["default", "gold"]
+        default: "default"
+      - label: "Section"
+        name: "section"
+        widget: "select"
+        hint: "Which grid this card belongs to on the Events page."
+        options:
+          - { label: "Upcoming Events & Programs (one-off / dated)", value: "gallery" }
+          - { label: "Weekly Programs (perpetual, no date)", value: "weekly" }
+        default: "gallery"
+      - label: "Schedule type"
+        name: "schedule"
+        widget: "select"
+        hint: "Controls when this card auto-archives into Previous Events. Weekly Programs should use \"No specific date\"."
+        options:
+          - { label: "One-off / multi-day date", value: "dated" }
+          - { label: "Ongoing until a date", value: "ongoing" }
+          - { label: "No specific date (recurring/perpetual)", value: "none" }
+        default: "dated"
+      - label: "Date(s)"
+        name: "dates"
+        widget: "string"
+        required: false
+        hint: "Required when Schedule type = \"One-off / multi-day date\". Format YYYY-MM-DD, or two comma-separated dates for a multi-day event, e.g. 2026-07-10,2026-07-11. The build fails with a clear error if this is missing or malformed."
+      - label: "Ongoing until"
+        name: "until"
+        widget: "date"
+        required: false
+        date_format: "YYYY-MM-DD"
+        hint: "Required when Schedule type = \"Ongoing until a date\"."
+      - label: "Show on homepage preview"
+        name: "show_on_homepage"
+        widget: "boolean"
+        default: false
+      - label: "Homepage highlight weekday"
+        name: "homepage_day"
+        widget: "select"
+        required: false
+        hint: "Only for a perpetual weekly item shown on the homepage — which weekday it should glow-highlight on. Leave blank otherwise."
+        options:
+          - { label: "Sunday", value: 0 }
+          - { label: "Monday", value: 1 }
+          - { label: "Tuesday", value: 2 }
+          - { label: "Wednesday", value: 3 }
+          - { label: "Thursday", value: 4 }
+          - { label: "Friday", value: 5 }
+          - { label: "Saturday", value: 6 }
+      - label: "Sort order"
+        name: "order"
+        widget: "number"
+        default: 0
+        hint: "Lower numbers appear first in the page's initial (pre-JS) order. Dated cards get re-sorted soonest-first automatically either way."
+
+  - name: "jummah"
+    label: "Jumu'ah (Friday) Info"
+    files:
+      - name: "jummah"
+        label: "This Week's Khutbah"
+        file: "content/jummah.yml"
+        fields:
+          - { label: "Khutbah title", name: "khutbah_title", widget: "string" }
+          - { label: "Khutbah reference", name: "khutbah_reference", widget: "string", hint: "e.g. Surah At-Takwir (81:26)" }
+          - { label: "Khateeb", name: "khateeb", widget: "string" }
+          - { label: "1st Jumu'ah time", name: "first_time", widget: "string", hint: "e.g. 1:40 PM" }
+          - { label: "2nd Jumu'ah time", name: "second_time", widget: "string", hint: "e.g. 2:30 PM" }
