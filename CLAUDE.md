@@ -14,8 +14,11 @@ build time by `scripts/build.js` from:
 lives between `<!-- CMS:EVENTS_GALLERY:START/END -->`,
 `<!-- CMS:EVENTS_WEEKLY:START/END -->`, and
 `<!-- CMS:EVENTS_HOMEPAGE:START/END -->` marker comments and gets overwritten
-by the build. Same for the Jumu'ah fields — they live in `<span
-data-cms="jummah.*">` spans; edit `content/jummah.yml` instead.
+by the build. Same for the Jumu'ah info — it lives between
+`<!-- CMS:JUMMAH_HERO:START/END -->` (index.html), and
+`<!-- CMS:JUMMAH_BANNER:START/END -->` /
+`<!-- CMS:JUMMAH_SIDEBAR:START/END -->` (prayer-times.html); edit
+`content/jummah.yml` instead.
 
 Non-developers can edit the same files through [Pages CMS](https://app.pagescms.org)
 (GitHub login), configured via `.pages.yml` in the repo root, instead of
@@ -59,3 +62,11 @@ khateeb — `first_time`, `first_khutbah_title`, `first_khutbah_reference`,
 `second_khutbah_title`, `second_khutbah_reference`, `second_khateeb` for the
 2nd. Injected into the banner on `index.html` and both Jumu'ah blocks on
 `prayer-times.html`.
+
+If `first_khutbah_title`, `first_khutbah_reference`, and `first_khateeb` all
+exactly match their `second_*` counterparts (i.e. one khateeb is giving both
+khutbahs on the same topic), the build collapses the two into a single
+combined block instead of showing the same title/reference/khateeb twice —
+only the two times still show separately. Any difference in any of those
+three fields renders two separate per-Jumu'ah cards. This comparison logic
+lives in `jummahSameTopic()` in `scripts/build.js`.
