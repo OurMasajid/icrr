@@ -53,6 +53,9 @@ better to catch a bad CMS entry at build time than ship broken markup.
 
 ## Jumu'ah fields (`content/jummah.yml`)
 
-`khutbah_title`, `khutbah_reference`, `khateeb`, `first_time`, `second_time` —
-injected into the banner on `index.html` and both Jumu'ah blocks on
+Each of the two Jumu'ah prayers has its own time, khutbah title/reference, and
+khateeb — `first_time`, `first_khutbah_title`, `first_khutbah_reference`,
+`first_khateeb` for the 1st Jumu'ah, and `second_time`,
+`second_khutbah_title`, `second_khutbah_reference`, `second_khateeb` for the
+2nd. Injected into the banner on `index.html` and both Jumu'ah blocks on
 `prayer-times.html`.
