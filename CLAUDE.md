@@ -17,8 +17,9 @@ lives between `<!-- CMS:EVENTS_GALLERY:START/END -->`,
 by the build. Same for the Jumu'ah fields — they live in `<span
 data-cms="jummah.*">` spans; edit `content/jummah.yml` instead.
 
-Non-developers can edit the same files through the Decap CMS at `/admin`
-(GitHub login) instead of touching YAML directly.
+Non-developers can edit the same files through [Pages CMS](https://app.pagescms.org)
+(GitHub login), configured via `.pages.yml` in the repo root, instead of
+touching YAML directly.
 
 ## Event fields (`content/events/<slug>.yml`)
 

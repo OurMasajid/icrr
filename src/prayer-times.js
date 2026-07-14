@@ -118,7 +118,7 @@
     if (days.length < 2) return;
     var today = days[0].prayers;
     var tomorrow = days[1].prayers;
-    var names = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    var names = ['Fajr', 'Dhuhr', 'Asr', 'Isha'];
     var changes = [];
 
     names.forEach(function (name) {
