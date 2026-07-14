@@ -1,0 +1,100 @@
+media:
+  input: images
+  output: /images
+
+content:
+  - name: events
+    label: "Events & Programs"
+    type: collection
+    path: content/events
+    format: yaml
+    filename: "{title}.yml"
+    fields:
+      - { name: title, label: "Title", type: string, required: true }
+      - name: detail
+        label: "Detail line"
+        type: string
+        description: 'Shown under the title, e.g. "Sat, July 11 · 8:00 PM · Potluck"'
+      - { name: image, label: "Flyer image", type: image }
+      - name: chip
+        label: "Chip label"
+        type: string
+        description: 'Small badge text, e.g. "This Saturday", "Youth", "Ongoing"'
+      - name: chip_style
+        label: "Chip style"
+        type: select
+        default: default
+        options:
+          values: [default, gold]
+      - name: section
+        label: "Section"
+        type: select
+        default: gallery
+        description: "Which grid this card belongs to on the Events page."
+        options:
+          values:
+            - name: gallery
+              label: "Upcoming Events & Programs (one-off / dated)"
+            - name: weekly
+              label: "Weekly Programs (perpetual, no date)"
+      - name: schedule
+        label: "Schedule type"
+        type: select
+        default: dated
+        description: 'Controls when this card auto-archives into Previous Events. Weekly Programs should use "No specific date".'
+        options:
+          values:
+            - name: dated
+              label: "One-off / multi-day date"
+            - name: ongoing
+              label: "Ongoing until a date"
+            - name: none
+              label: "No specific date (recurring/perpetual)"
+      - name: dates
+        label: "Date(s)"
+        type: string
+        required: false
+        description: 'Required when Schedule type = "One-off / multi-day date". Format YYYY-MM-DD, or two comma-separated dates for a multi-day event, e.g. 2026-07-10,2026-07-11. The build fails with a clear error if this is missing or malformed.'
+      - name: until
+        label: "Ongoing until"
+        type: date
+        required: false
+        description: 'Required when Schedule type = "Ongoing until a date".'
+      - name: show_on_homepage
+        label: "Show on homepage preview"
+        type: boolean
+        default: false
+      - name: homepage_day
+        label: "Homepage highlight weekday"
+        type: number
+        required: false
+        description: "Only for a perpetual weekly item shown on the homepage — which weekday it should glow-highlight on (0=Sunday...6=Saturday). Leave blank otherwise."
+        options:
+          min: 0
+          max: 6
+      - name: order
+        label: "Sort order"
+        type: number
+        default: 0
+        description: "Lower numbers appear first in the page's initial (pre-JS) order. Dated cards get re-sorted soonest-first automatically either way."
+
+  - name: jummah
+    label: "Jumu'ah (Friday) Info"
+    type: file
+    path: content/jummah.yml
+    format: yaml
+    fields:
+      - { name: khutbah_title, label: "Khutbah title", type: string }
+      - name: khutbah_reference
+        label: "Khutbah reference"
+        type: string
+        description: "e.g. Surah At-Takwir (81:26)"
+      - { name: khateeb, label: "Khateeb", type: string }
+      - name: first_time
+        label: "1st Jumu'ah time"
+        type: string
+        description: "e.g. 1:40 PM"
+      - name: second_time
+        label: "2nd Jumu'ah time"
+        type: string
+        description: "e.g. 2:30 PM"

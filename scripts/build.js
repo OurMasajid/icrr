@@ -65,11 +65,11 @@ function rewriteHtml(replacements) {
   }
 }
 
-// --- Decap CMS-managed content (content/events/*.yml, content/jummah.yml) ---
+// --- CMS-managed content (content/events/*.yml, content/jummah.yml) ---
 // Cards and Jummah fields are authored in git-backed YAML so non-developers can
-// edit them via the /admin CMS. This build step renders that data into the
-// static HTML at the marker comments below — the pages themselves stay plain
-// HTML with no client-side templating.
+// edit them via Pages CMS (see .pages.yml). This build step renders that data
+// into the static HTML at the marker comments below — the pages themselves
+// stay plain HTML with no client-side templating.
 
 function escapeHtml(str) {
   return String(str)
