@@ -84,17 +84,23 @@ content:
     path: content/jummah.yml
     format: yaml
     fields:
-      - { name: khutbah_title, label: "Khutbah title", type: string }
-      - name: khutbah_reference
-        label: "Khutbah reference"
-        type: string
-        description: "e.g. Surah At-Takwir (81:26)"
-      - { name: khateeb, label: "Khateeb", type: string }
       - name: first_time
         label: "1st Jumu'ah time"
         type: string
         description: "e.g. 1:40 PM"
+      - { name: first_khutbah_title, label: "1st Jumu'ah khutbah title", type: string }
+      - name: first_khutbah_reference
+        label: "1st Jumu'ah khutbah reference"
+        type: string
+        description: "e.g. Surah At-Takwir (81:26)"
+      - { name: first_khateeb, label: "1st Jumu'ah khateeb", type: string }
       - name: second_time
         label: "2nd Jumu'ah time"
         type: string
         description: "e.g. 2:30 PM"
+      - { name: second_khutbah_title, label: "2nd Jumu'ah khutbah title", type: string }
+      - name: second_khutbah_reference
+        label: "2nd Jumu'ah khutbah reference"
+        type: string
+        description: "e.g. Surah At-Takwir (81:26)"
+      - { name: second_khateeb, label: "2nd Jumu'ah khateeb", type: string }
