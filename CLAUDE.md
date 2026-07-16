@@ -56,17 +56,16 @@ better to catch a bad CMS entry at build time than ship broken markup.
 
 ## Jumu'ah fields (`content/jummah.yml`)
 
-Each of the two Jumu'ah prayers has its own time, khutbah title/reference, and
-khateeb — `first_time`, `first_khutbah_title`, `first_khutbah_reference`,
-`first_khateeb` for the 1st Jumu'ah, and `second_time`,
-`second_khutbah_title`, `second_khutbah_reference`, `second_khateeb` for the
-2nd. Injected into the banner on `index.html` and both Jumu'ah blocks on
+Each of the two Jumu'ah prayers has its own time, khutbah title, and khateeb —
+`first_time`, `first_khutbah_title`, `first_khateeb` for the 1st Jumu'ah, and
+`second_time`, `second_khutbah_title`, `second_khateeb` for the 2nd. Injected
+into the banner on `index.html` and both Jumu'ah blocks on
 `prayer-times.html`.
 
-If `first_khutbah_title`, `first_khutbah_reference`, and `first_khateeb` all
-exactly match their `second_*` counterparts (i.e. one khateeb is giving both
-khutbahs on the same topic), the build collapses the two into a single
-combined block instead of showing the same title/reference/khateeb twice —
-only the two times still show separately. Any difference in any of those
-three fields renders two separate per-Jumu'ah cards. This comparison logic
-lives in `jummahSameTopic()` in `scripts/build.js`.
+If `first_khutbah_title` and `first_khateeb` both exactly match their
+`second_*` counterparts (i.e. one khateeb is giving both khutbahs on the same
+topic), the build collapses the two into a single combined block instead of
+showing the same title/khateeb twice — only the two times still show
+separately. Any difference in either field renders two separate per-Jumu'ah
+cards. This comparison logic lives in `jummahSameTopic()` in
+`scripts/build.js`.
