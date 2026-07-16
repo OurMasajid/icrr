@@ -150,11 +150,10 @@ function buildEvents() {
 const JUMMAH_DONATION_LINK_FULL = `<a href="https://us.mohid.co/tx/austin/icrr/masjid/online/donation" target="_blank" rel="noopener" class="btn btn-gold mt-4">Virtual Friday Donation Box</a>`;
 const JUMMAH_DONATION_LINK_BLOCK = `<a href="https://us.mohid.co/tx/austin/icrr/masjid/online/donation" target="_blank" rel="noopener" class="btn btn-gold mt-4 w-full justify-center">Virtual Friday Donation Box</a>`;
 
-// If both Jumu'ahs share the same khutbah title, reference, and khateeb, show
-// a single combined block instead of duplicating identical info twice.
+// If both Jumu'ahs share the same khutbah title and khateeb, show a single
+// combined block instead of duplicating identical info twice.
 function jummahSameTopic(d) {
   return d.first_khutbah_title === d.second_khutbah_title
-    && d.first_khutbah_reference === d.second_khutbah_reference
     && d.first_khateeb === d.second_khateeb;
 }
 
@@ -164,7 +163,6 @@ function renderJummahHero(d, same) {
     return `      <div class="jummah-hero-header text-center">
         <p class="uppercase text-xs tracking-widest text-emerald-200 mt-3">This Week's Khutbah</p>
         <h3 class="font-display text-2xl md:text-3xl font-bold text-white mt-2 leading-tight">"${e(d.first_khutbah_title)}"</h3>
-        <p class="text-yellow-300 mt-1">${e(d.first_khutbah_reference)}</p>
         <p class="text-emerald-50 text-lg mt-2">by <strong class="text-white">${e(d.first_khateeb)}</strong></p>
       </div>
       <div class="jummah-hero-body">
@@ -190,14 +188,12 @@ function renderJummahHero(d, same) {
             <p class="text-xs font-bold uppercase tracking-wider text-emerald-200">1st Jumuʿah</p>
             <p class="font-display text-2xl text-white mt-1">${e(d.first_time)}</p>
             <h3 class="font-display text-base font-bold text-white mt-3 leading-tight">"${e(d.first_khutbah_title)}"</h3>
-            <p class="text-yellow-300 text-xs mt-1">${e(d.first_khutbah_reference)}</p>
             <p class="text-emerald-50 text-sm mt-2">by <strong class="text-white">${e(d.first_khateeb)}</strong></p>
           </div>
           <div class="rounded-xl bg-white/10 px-4 py-3 text-center">
             <p class="text-xs font-bold uppercase tracking-wider text-emerald-200">2nd Jumuʿah</p>
             <p class="font-display text-2xl text-white mt-1">${e(d.second_time)}</p>
             <h3 class="font-display text-base font-bold text-white mt-3 leading-tight">"${e(d.second_khutbah_title)}"</h3>
-            <p class="text-yellow-300 text-xs mt-1">${e(d.second_khutbah_reference)}</p>
             <p class="text-emerald-50 text-sm mt-2">by <strong class="text-white">${e(d.second_khateeb)}</strong></p>
           </div>
         </div>
@@ -212,7 +208,6 @@ function renderJummahBanner(d, same) {
       <span class="chip chip-gold text-base px-4 py-1.5">Today is Jumuʿah</span>
       <p class="uppercase text-xs tracking-widest text-emerald-200 mt-5">This Week's Khutbah</p>
       <h2 class="font-display text-3xl md:text-5xl font-bold text-white mt-2 leading-tight">"${e(d.first_khutbah_title)}"</h2>
-      <p class="text-yellow-300 text-lg mt-2">${e(d.first_khutbah_reference)}</p>
       <p class="text-emerald-50 text-xl mt-4">by <strong class="text-white">${e(d.first_khateeb)}</strong></p>
     </div>
     <div class="flex justify-center gap-4 md:gap-6 mt-8">
@@ -239,14 +234,12 @@ function renderJummahBanner(d, same) {
         <p class="text-xs font-bold uppercase tracking-wider text-emerald-200">1st Jumuʿah</p>
         <p class="font-display text-3xl md:text-4xl text-white mt-1">${e(d.first_time)}</p>
         <h3 class="font-display text-lg md:text-xl font-bold text-white mt-3 leading-tight">"${e(d.first_khutbah_title)}"</h3>
-        <p class="text-yellow-300 text-sm mt-1">${e(d.first_khutbah_reference)}</p>
         <p class="text-emerald-50 mt-2">by <strong class="text-white">${e(d.first_khateeb)}</strong></p>
       </div>
       <div class="jummah-time-card">
         <p class="text-xs font-bold uppercase tracking-wider text-emerald-200">2nd Jumuʿah</p>
         <p class="font-display text-3xl md:text-4xl text-white mt-1">${e(d.second_time)}</p>
         <h3 class="font-display text-lg md:text-xl font-bold text-white mt-3 leading-tight">"${e(d.second_khutbah_title)}"</h3>
-        <p class="text-yellow-300 text-sm mt-1">${e(d.second_khutbah_reference)}</p>
         <p class="text-emerald-50 mt-2">by <strong class="text-white">${e(d.second_khateeb)}</strong></p>
       </div>
     </div>
@@ -263,7 +256,6 @@ function renderJummahSidebar(d, same) {
   if (same) {
     return `        <p class="text-xs uppercase tracking-wider text-brand font-bold mt-4">This Week's Khutbah</p>
         <p class="font-display text-lg font-bold text-slate-900 mt-1">"${e(d.first_khutbah_title)}"</p>
-        <p class="text-sm text-gold-600 font-semibold">${e(d.first_khutbah_reference)}</p>
         <p class="text-slate-700 mt-2"><strong>Imam:</strong> ${e(d.first_khateeb)}</p>
         <div class="mt-4 grid grid-cols-2 gap-3">
           <div class="rounded-xl bg-brand-soft px-4 py-3 text-center">
@@ -283,14 +275,12 @@ function renderJummahSidebar(d, same) {
             <p class="text-xs font-bold uppercase tracking-wider text-brand-deep">1st Jumuʿah</p>
             <p class="font-display text-xl text-brand-deep mt-1">${e(d.first_time)}</p>
             <p class="font-display text-sm font-bold text-slate-900 mt-2">"${e(d.first_khutbah_title)}"</p>
-            <p class="text-xs text-gold-600 font-semibold mt-1">${e(d.first_khutbah_reference)}</p>
             <p class="text-slate-700 text-sm mt-1"><strong>Imam:</strong> ${e(d.first_khateeb)}</p>
           </div>
           <div class="rounded-xl bg-brand-soft px-4 py-3 text-center">
             <p class="text-xs font-bold uppercase tracking-wider text-brand-deep">2nd Jumuʿah</p>
             <p class="font-display text-xl text-brand-deep mt-1">${e(d.second_time)}</p>
             <p class="font-display text-sm font-bold text-slate-900 mt-2">"${e(d.second_khutbah_title)}"</p>
-            <p class="text-xs text-gold-600 font-semibold mt-1">${e(d.second_khutbah_reference)}</p>
             <p class="text-slate-700 text-sm mt-1"><strong>Imam:</strong> ${e(d.second_khateeb)}</p>
           </div>
         </div>
