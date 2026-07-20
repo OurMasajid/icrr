@@ -1,0 +1,58 @@
+---
+interface Props {
+  active?: 'home' | 'about' | 'programs' | 'prayer-times' | 'events' | 'services' | 'contact' | '';
+  home?: boolean;
+}
+const { active = '', home = false } = Astro.props;
+
+const links: { key: NonNullable<Props['active']>; label: string; href: string }[] = [
+  { key: 'home', label: 'Home', href: 'index.html' },
+  { key: 'about', label: 'About', href: 'about.html' },
+  { key: 'programs', label: 'Programs', href: 'programs.html' },
+  { key: 'prayer-times', label: 'Prayer Times', href: 'prayer-times.html' },
+  { key: 'events', label: 'Events', href: 'events.html' },
+  { key: 'services', label: 'Services', href: 'services.html' },
+  { key: 'contact', label: 'Contact', href: 'contact.html' },
+];
+
+const donateHref = home ? '#donate' : 'index.html#donate';
+---
+
+<header class="site-nav">
+  <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-20">
+    <a href="index.html" class="flex items-center gap-3">
+      <span class="brand-mark"><img src="images/logo.png" alt="Islamic Center of Round Rock logo" class="brand-mark-img" width="44" height="44" /></span>
+      <span class="flex flex-col leading-tight">
+        <span class="font-display text-lg text-brand-deep">Islamic Center of Round Rock</span>
+        <span class="text-xs uppercase tracking-widest text-slate-500">Est. 2002 · Round Rock, TX</span>
+      </span>
+    </a>
+
+    <nav class="desktop-nav flex items-center gap-7">
+      {links.map((l) => (
+        <a href={l.href} class:list={['nav-link', { active: active === l.key }]}>{l.label}</a>
+      ))}
+      <a href={donateHref} class="btn btn-gold">
+        {home && (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        )}
+        Donate
+      </a>
+    </nav>
+
+    <button id="menuBtn" class="menu-toggle" aria-label="Open menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div id="mobileMenu" class="mobile-menu">
+    {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    {home && <a href="#donate" class="text-brand font-semibold">Donate</a>}
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('menuBtn');
+  const menu = document.getElementById('mobileMenu');
+  btn && btn.addEventListener('click', () => menu.classList.toggle('open'));
+  menu && menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => menu.classList.remove('open')));
+</script>

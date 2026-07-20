@@ -1,0 +1,35 @@
+---
+import type { Event } from '../lib/events';
+import { dateAttrs } from '../lib/events';
+
+interface Props {
+  ev: Event;
+  homepage?: boolean;
+}
+const { ev, homepage = false } = Astro.props;
+
+const chipClass = ev.chip_style === 'gold' ? 'chip chip-gold' : 'chip';
+const alt = `${ev.title} — ${ev.detail}`;
+
+let attrs = dateAttrs(ev);
+if (homepage && ev.schedule === 'none' && ev.homepage_day !== undefined) {
+  attrs = { 'data-event-day': String(ev.homepage_day) };
+}
+---
+
+<div class="event-flyer-card" {...attrs}>
+  {homepage ? (
+    <a href="events.html" class="event-flyer-img-wrap">
+      <img src={ev.image} alt={alt} loading="lazy" />
+    </a>
+  ) : (
+    <a href={ev.image} target="_blank" class="event-flyer-img-wrap">
+      <img src={ev.image} alt={alt} loading="lazy" />
+    </a>
+  )}
+  <div class="event-flyer-info">
+    <span class={chipClass}>{ev.chip}</span>
+    <h3 class="font-display text-lg mt-2">{ev.title}</h3>
+    <p class="text-sm text-slate-500 mt-1">{ev.detail}</p>
+  </div>
+</div>

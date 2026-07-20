@@ -1,0 +1,54 @@
+---
+import type { JummahData } from '../lib/jummah';
+import { jummahSameTopic } from '../lib/jummah';
+
+interface Props { d: JummahData }
+const { d } = Astro.props;
+const same = jummahSameTopic(d);
+---
+
+{same ? (
+  <Fragment>
+    <div class="jummah-hero-header text-center">
+      <p class="uppercase text-xs tracking-widest text-emerald-200 mt-3">This Week's Khutbah</p>
+      <h3 class="font-display text-2xl md:text-3xl font-bold text-white mt-2 leading-tight">"{d.first_khutbah_title}"</h3>
+      <p class="text-emerald-50 text-lg mt-2">by <strong class="text-white">{d.first_khateeb}</strong></p>
+    </div>
+    <div class="jummah-hero-body">
+      <div class="grid grid-cols-2 gap-3">
+        <div class="rounded-xl bg-white/10 px-4 py-3 text-center">
+          <p class="text-xs font-bold uppercase tracking-wider text-emerald-200">1st Jumuʿah</p>
+          <p class="font-display text-2xl text-white mt-1">{d.first_time}</p>
+        </div>
+        <div class="rounded-xl bg-white/10 px-4 py-3 text-center">
+          <p class="text-xs font-bold uppercase tracking-wider text-emerald-200">2nd Jumuʿah</p>
+          <p class="font-display text-2xl text-white mt-1">{d.second_time}</p>
+        </div>
+      </div>
+      <a href="https://us.mohid.co/tx/austin/icrr/masjid/online/donation" target="_blank" rel="noopener" class="btn btn-gold mt-4 w-full justify-center">Virtual Friday Donation Box</a>
+    </div>
+  </Fragment>
+) : (
+  <Fragment>
+    <div class="jummah-hero-header text-center">
+      <p class="uppercase text-xs tracking-widest text-emerald-200 mt-3">This Week's Khutbahs</p>
+    </div>
+    <div class="jummah-hero-body">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="rounded-xl bg-white/10 px-4 py-3 text-center">
+          <p class="text-xs font-bold uppercase tracking-wider text-emerald-200">1st Jumuʿah</p>
+          <p class="font-display text-2xl text-white mt-1">{d.first_time}</p>
+          <h3 class="font-display text-base font-bold text-white mt-3 leading-tight">"{d.first_khutbah_title}"</h3>
+          <p class="text-emerald-50 text-sm mt-2">by <strong class="text-white">{d.first_khateeb}</strong></p>
+        </div>
+        <div class="rounded-xl bg-white/10 px-4 py-3 text-center">
+          <p class="text-xs font-bold uppercase tracking-wider text-emerald-200">2nd Jumuʿah</p>
+          <p class="font-display text-2xl text-white mt-1">{d.second_time}</p>
+          <h3 class="font-display text-base font-bold text-white mt-3 leading-tight">"{d.second_khutbah_title}"</h3>
+          <p class="text-emerald-50 text-sm mt-2">by <strong class="text-white">{d.second_khateeb}</strong></p>
+        </div>
+      </div>
+      <a href="https://us.mohid.co/tx/austin/icrr/masjid/online/donation" target="_blank" rel="noopener" class="btn btn-gold mt-4 w-full justify-center">Virtual Friday Donation Box</a>
+    </div>
+  </Fragment>
+)}

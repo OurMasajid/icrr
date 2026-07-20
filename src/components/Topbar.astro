@@ -1,0 +1,47 @@
+---
+// The legacy hand-authored pages drifted into three slightly different
+// topbar markups over time; preserved as-is rather than unified, since
+// this migration is a lift-and-shift, not a redesign.
+interface Props {
+  variant?: 'svg-social' | 'svg' | 'emoji';
+}
+const { variant = 'emoji' } = Astro.props;
+---
+
+<div class="topbar">
+  <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex flex-wrap items-center gap-x-6 gap-y-1">
+      {variant === 'emoji' ? (
+        <Fragment>
+          <a href="tel:+15127303644">📞 (512) 730-3644</a>
+          <a href="mailto:contact@roundrockmasjid.org">✉ contact@roundrockmasjid.org</a>
+          <a href="https://maps.google.com/?q=1951+Hampton+Ln+Round+Rock+TX+78664" target="_blank" rel="noopener">📍 1951 Hampton Ln, Round Rock, TX 78664</a>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <a href="tel:+15127303644" class="inline-flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+            (512) 730-3644
+          </a>
+          <a href="mailto:contact@roundrockmasjid.org" class="inline-flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
+            contact@roundrockmasjid.org
+          </a>
+          {variant === 'svg-social' && (
+            <a href="https://maps.google.com/?q=1951+Hampton+Ln+Round+Rock+TX+78664" target="_blank" rel="noopener" class="inline-flex items-center gap-2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              1951 Hampton Ln, Round Rock, TX 78664
+            </a>
+          )}
+        </Fragment>
+      )}
+    </div>
+    {variant === 'svg-social' && (
+      <div class="flex items-center gap-3">
+        <a href="https://twitter.com/icrrmasjid" target="_blank" rel="noopener" aria-label="Twitter"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22 5.8c-.7.3-1.5.6-2.4.7.9-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1A4.1 4.1 0 0 0 11.8 9c0 .3 0 .6.1.9A11.6 11.6 0 0 1 3 4.7a4.1 4.1 0 0 0 1.3 5.5c-.7 0-1.3-.2-1.9-.5v.1c0 2 1.4 3.6 3.3 4-.6.2-1.3.2-2 .1.6 1.6 2.1 2.8 4 2.9A8.3 8.3 0 0 1 2 18.4 11.6 11.6 0 0 0 8.3 20c7.5 0 11.6-6.2 11.6-11.6v-.5c.8-.6 1.5-1.3 2.1-2.1z"/></svg></a>
+        <a href="https://www.facebook.com/RoundRockMasjid" target="_blank" rel="noopener" aria-label="Facebook"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h3l1-4h-4V7.5c0-1.1.4-2 2-2h2V2h-3c-3 0-5 1.8-5 5v3H6v4h3v8h4z"/></svg></a>
+        <a href="https://www.youtube.com/@icrrmasjid" target="_blank" rel="noopener" aria-label="YouTube"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22 8.2a3.2 3.2 0 0 0-2.3-2.3C17.8 5.4 12 5.4 12 5.4s-5.8 0-7.7.5A3.2 3.2 0 0 0 2 8.2 33.5 33.5 0 0 0 1.6 12 33.5 33.5 0 0 0 2 15.8a3.2 3.2 0 0 0 2.3 2.3c1.9.5 7.7.5 7.7.5s5.8 0 7.7-.5a3.2 3.2 0 0 0 2.3-2.3A33.5 33.5 0 0 0 22.4 12 33.5 33.5 0 0 0 22 8.2zM10 15.3V8.7l5.5 3.3-5.5 3.3z"/></svg></a>
+      </div>
+    )}
+  </div>
+</div>

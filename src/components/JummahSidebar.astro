@@ -1,0 +1,48 @@
+---
+import type { JummahData } from '../lib/jummah';
+import { jummahSameTopic } from '../lib/jummah';
+
+interface Props { d: JummahData }
+const { d } = Astro.props;
+const same = jummahSameTopic(d);
+---
+
+{same ? (
+  <Fragment>
+    <p class="text-xs uppercase tracking-wider text-brand font-bold mt-4">This Week's Khutbah</p>
+    <p class="font-display text-lg font-bold text-slate-900 mt-1">"{d.first_khutbah_title}"</p>
+    <p class="text-slate-700 mt-2"><strong>Imam:</strong> {d.first_khateeb}</p>
+    <div class="mt-4 grid grid-cols-2 gap-3">
+      <div class="rounded-xl bg-brand-soft px-4 py-3 text-center">
+        <p class="text-xs font-bold uppercase tracking-wider text-brand-deep">1st Jumuʿah</p>
+        <p class="font-display text-xl text-brand-deep mt-1">{d.first_time}</p>
+      </div>
+      <div class="rounded-xl bg-brand-soft px-4 py-3 text-center">
+        <p class="text-xs font-bold uppercase tracking-wider text-brand-deep">2nd Jumuʿah</p>
+        <p class="font-display text-xl text-brand-deep mt-1">{d.second_time}</p>
+      </div>
+    </div>
+    <p class="text-slate-500 mt-3 text-sm">Salah immediately after khutbah. Please arrive early — overflow parking opens 40 min prior.</p>
+    <a href="https://us.mohid.co/tx/austin/icrr/masjid/online/donation" target="_blank" rel="noopener" class="btn btn-gold mt-4 w-full justify-center">Virtual Friday Donation Box</a>
+  </Fragment>
+) : (
+  <Fragment>
+    <p class="text-xs uppercase tracking-wider text-brand font-bold mt-4">This Week's Khutbahs</p>
+    <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="rounded-xl bg-brand-soft px-4 py-3 text-center">
+        <p class="text-xs font-bold uppercase tracking-wider text-brand-deep">1st Jumuʿah</p>
+        <p class="font-display text-xl text-brand-deep mt-1">{d.first_time}</p>
+        <p class="font-display text-sm font-bold text-slate-900 mt-2">"{d.first_khutbah_title}"</p>
+        <p class="text-slate-700 text-sm mt-1"><strong>Imam:</strong> {d.first_khateeb}</p>
+      </div>
+      <div class="rounded-xl bg-brand-soft px-4 py-3 text-center">
+        <p class="text-xs font-bold uppercase tracking-wider text-brand-deep">2nd Jumuʿah</p>
+        <p class="font-display text-xl text-brand-deep mt-1">{d.second_time}</p>
+        <p class="font-display text-sm font-bold text-slate-900 mt-2">"{d.second_khutbah_title}"</p>
+        <p class="text-slate-700 text-sm mt-1"><strong>Imam:</strong> {d.second_khateeb}</p>
+      </div>
+    </div>
+    <p class="text-slate-500 mt-3 text-sm">Salah immediately after khutbah. Please arrive early — overflow parking opens 40 min prior.</p>
+    <a href="https://us.mohid.co/tx/austin/icrr/masjid/online/donation" target="_blank" rel="noopener" class="btn btn-gold mt-4 w-full justify-center">Virtual Friday Donation Box</a>
+  </Fragment>
+)}

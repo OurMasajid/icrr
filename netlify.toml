@@ -1,7 +1,10 @@
 [build]
   command = "npm run build"
-  publish = "."
+  publish = "dist"
   functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
 
 [functions]
   node_bundler = "esbuild"
@@ -21,8 +24,10 @@
   [headers.values]
     Access-Control-Allow-Origin = "*"
 
+# Astro content-hashes every bundled CSS/JS file under /_astro/, so it's
+# always safe to cache them forever — a new deploy is served from new URLs.
 [[headers]]
-  for = "/*.css"
+  for = "/_astro/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
@@ -30,11 +35,6 @@
   for = "/images/*"
   [headers.values]
     Cache-Control = "public, max-age=2592000, immutable"
-
-[[headers]]
-  for = "/*.js"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
 
 # Redirect www to apex
 [[redirects]]
