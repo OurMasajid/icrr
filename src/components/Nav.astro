@@ -1,6 +1,6 @@
 ---
 interface Props {
-  active?: 'home' | 'about' | 'programs' | 'prayer-times' | 'events' | 'services' | 'contact' | '';
+  active?: 'home' | 'about' | 'programs' | 'prayer-times' | 'events' | 'services' | 'contact' | 'donate' | '';
   home?: boolean;
 }
 const { active = '', home = false } = Astro.props;
@@ -15,7 +15,7 @@ const links: { key: NonNullable<Props['active']>; label: string; href: string }[
   { key: 'contact', label: 'Contact', href: 'contact.html' },
 ];
 
-const donateHref = home ? '#donate' : 'index.html#donate';
+const donateHref = 'donate.html';
 ---
 
 <header class="site-nav">
@@ -46,7 +46,7 @@ const donateHref = home ? '#donate' : 'index.html#donate';
   </div>
   <div id="mobileMenu" class="mobile-menu">
     {links.map((l) => <a href={l.href}>{l.label}</a>)}
-    {home && <a href="#donate" class="text-brand font-semibold">Donate</a>}
+    <a href={donateHref} class="text-brand font-semibold">Donate</a>
   </div>
 </header>
 
