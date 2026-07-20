@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Topbar from '../components/Topbar.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import EventCard from '../components/EventCard.astro';
+
+const allEvents = await getCollection('events');
+const gallery = allEvents.filter((e) => e.data.section === 'gallery').sort((a, b) => a.data.order - b.data.order);
+const weekly = allEvents.filter((e) => e.data.section === 'weekly').sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Events — Islamic Center of Round Rock"
+  description="Eid prayers, community dinners, lectures, and seasonal programs at ICRR."
+  path="events.html"
+>
+  <Topbar />
+  <Nav active="events" />
+
+  <section class="page-header">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="crumbs"><a href="index.html">Home</a> / Events</p>
+      <h1 class="font-display text-4xl md:text-5xl font-bold mt-3">Events</h1>
+      <p class="mt-4 max-w-2xl text-emerald-50/90">From the two Eids to monthly potlucks and youth nights — there's always something to be part of.</p>
+    </div>
+  </section>
+
+  <!-- Event Flyers Gallery -->
+  <section class="pb-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="section-title">Upcoming Events & Programs</h2>
+      <p class="mt-3 text-slate-600 max-w-2xl">Tap any flyer to view full details.</p>
+
+      <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="eventGallery">
+        {gallery.map((e) => <EventCard ev={e.data} />)}
+      </div>
+
+      <!-- Previous Events (populated automatically as dated events pass) -->
+      <div id="pastEventsSection" style="display:none">
+        <h2 class="section-title mt-20">Previous Events</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">A look back at what we've hosted recently.</p>
+        <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="pastEventsGallery"></div>
+      </div>
+
+      <!-- Weekly / Recurring Programs -->
+      <h2 class="section-title mt-20">Weekly Programs</h2>
+      <p class="mt-3 text-slate-600 max-w-2xl">Programs that run every week — open to the whole community.</p>
+
+      <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {weekly.map((e) => <EventCard ev={e.data} />)}
+      </div>
+
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  import '../scripts/events-sort.client.js';
+</script>

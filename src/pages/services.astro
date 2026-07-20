@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Topbar from '../components/Topbar.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Services — Islamic Center of Round Rock"
+  description="Funeral (Janazah), Nikāḥ, free medical clinic, counseling, and humanitarian/Zakat assistance at ICRR."
+  ogDescription="Funeral (Janazah), Nikah, free medical clinic, counseling, and humanitarian/Zakat assistance at ICRR."
+  path="services.html"
+>
+  <Topbar />
+  <Nav active="services" />
+
+  <section class="page-header">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="crumbs"><a href="index.html">Home</a> / Services</p>
+      <h1 class="font-display text-4xl md:text-5xl font-bold mt-3">Services</h1>
+      <p class="mt-4 max-w-2xl text-emerald-50/90">Care for the moments that matter — life, marriage, loss, and well-being.</p>
+    </div>
+  </section>
+
+  <section class="py-16">
+    <div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-8">
+
+      <article class="card">
+        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <h2 class="font-display text-2xl">Funeral (Janāzah) Service</h2>
+        <p class="text-slate-600 mt-2">The masjid provides Ghusl, Kafan, Janāzah prayer, and burial coordination according to the sunnah.</p>
+        <p class="mt-3 font-semibold text-brand-deep">If a death happens in the community, please call (512) 666-3389 (9 am – 5 pm) and visit the ICGA Muslim Cemetery website.</p>
+        <ul class="list-check mt-4">
+          <li>Contact hours: 9 am – 5 pm — <a class="text-brand font-semibold" href="tel:+15126663389">(512) 666-3389</a></li>
+          <li>Coordination with local cemeteries and funeral homes</li>
+          <li>Guidance for the family during this difficult time</li>
+        </ul>
+        <div class="mt-5 flex flex-wrap gap-2">
+          <a href="tel:+15126663389" class="btn btn-primary">Call (512) 666-3389</a>
+          <a href="https://www.icgamuslimcemetery.org" target="_blank" rel="noopener" class="btn btn-outline">Cemetery website</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <h2 class="font-display text-2xl">Nikāḥ Service</h2>
+        <p class="text-slate-600 mt-2">Marriages are officiated by the Imam according to Islamic principles. We provide premarital counseling, the nikāḥ ceremony itself, and a signed nikāḥ contract.</p>
+        <ul class="list-check mt-4">
+          <li>Premarital meeting with the Imam</li>
+          <li>Two witnesses required (we can help arrange)</li>
+          <li>Documented mahr and contract</li>
+        </ul>
+        <a href="contact.html" class="btn btn-primary mt-5">Request Nikāḥ</a>
+      </article>
+
+      <article class="card">
+        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <h2 class="font-display text-2xl">Free Medical Clinic</h2>
+        <p class="text-slate-600 mt-2">In partnership with Eixsys Healthcare, the masjid hosts a free walk-in clinic every Wednesday from <strong>6:30–7:30 PM</strong>. Open to all — Muslims and non-Muslims.</p>
+        <ul class="list-check mt-4">
+          <li>Routine check-ups</li>
+          <li>Basic prescriptions</li>
+          <li>Health screenings</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+        <h2 class="font-display text-2xl">Counseling & Family Support</h2>
+        <p class="text-slate-600 mt-2">Confidential meetings with the Imam for spiritual, marital, and family concerns. Please call ahead to set up a time.</p>
+        <a href="contact.html" class="btn btn-outline mt-5">Schedule a meeting</a>
+      </article>
+
+      <article class="card">
+        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <h2 class="font-display text-2xl">Humanitarian Assistance</h2>
+        <p class="text-slate-600 mt-2">ICRR is part of the Greater Austin Muslim Relief Committee (GAMRC), which directs Zakat and Sadaqah to families in need across the Greater Austin area — rent, utilities, food, and urgent medical or debt relief.</p>
+        <ul class="list-check mt-4">
+          <li>Free Food Pantry partnership</li>
+          <li>Rent, utility, and urgent debt assistance</li>
+          <li>Support for widows, orphans, and families in crisis</li>
+        </ul>
+        <p class="mt-4 font-semibold">If you need help, apply here:</p>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <a href="https://austinzakat.org/ApplyForHelp" target="_blank" rel="noopener" class="btn btn-primary">Apply For Help</a>
+          <a href="https://austinzakat.org/PayZakatHere" target="_blank" rel="noopener" class="btn btn-outline">Pay Zakat Here</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>

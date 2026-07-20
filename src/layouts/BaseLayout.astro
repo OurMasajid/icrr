@@ -1,0 +1,55 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  // A few pages' og:description/twitter:description text drifted slightly
+  // from their <meta name="description">; default to the same text.
+  ogDescription?: string;
+  // Relative path from the site root used for canonical/og:url, e.g. '' for
+  // the homepage or 'events.html' for the events page. Omit entirely for
+  // pages that carry no canonical/og/twitter tags (404, thank-you).
+  path?: string;
+  noindex?: boolean;
+}
+const { title, description, ogDescription, path, noindex = false } = Astro.props;
+const socialDescription = ogDescription ?? description;
+const canonical = path !== undefined ? `https://roundrockmasjid.org/${path}` : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+{canonical && <link rel="canonical" href={canonical} />}
+<meta name="theme-color" content="#047857" />
+{noindex && <meta name="robots" content="noindex" />}
+{canonical && (
+  <Fragment>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={socialDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Islamic Center of Round Rock" />
+    <slot name="og-extra" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={socialDescription} />
+  </Fragment>
+)}
+<slot name="head" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" type="image/png" href="images/logo.png" />
+<link rel="apple-touch-icon" href="images/logo.png" />
+</head>
+<body>
+<slot />
+</body>
+</html>

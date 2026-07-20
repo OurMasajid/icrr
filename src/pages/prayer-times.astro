@@ -1,0 +1,103 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Topbar from '../components/Topbar.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import JummahBanner from '../components/JummahBanner.astro';
+import JummahSidebar from '../components/JummahSidebar.astro';
+import { getJummah } from '../lib/jummah';
+
+const jummah = getJummah();
+---
+
+<BaseLayout
+  title="Prayer Times — Islamic Center of Round Rock"
+  description="Daily prayer (Salah) and Iqamah times for the Islamic Center of Round Rock, TX."
+  path="prayer-times.html"
+>
+  <Topbar />
+  <Nav active="prayer-times" />
+
+  <section class="page-header">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="crumbs"><a href="index.html">Home</a> / Prayer Times</p>
+      <h1 class="font-display text-4xl md:text-5xl font-bold mt-3">Prayer Timings</h1>
+      <p class="mt-4 max-w-2xl text-emerald-50/90">Today's Adhan and Iqamah times. Check back daily — timings shift slightly with the season.</p>
+    </div>
+  </section>
+
+  <!-- Friday Jummah Banner — visible on Fridays from Fajr to Asr -->
+  <section id="jummahBanner" class="jummah-banner" style="display:none">
+    <div class="max-w-5xl mx-auto px-4">
+      <JummahBanner d={jummah} />
+    </div>
+  </section>
+
+  <section class="py-16">
+    <div class="max-w-5xl mx-auto px-4 grid lg:grid-cols-3 gap-8">
+
+      <div class="lg:col-span-2 masjidal-embed">
+        <iframe
+          title="Daily prayer timings — Masjidal"
+          src="https://timing.athanplus.com/masjid/widgets/embed?theme=3&masjid_id=E5AvRnAX"
+          loading="lazy"
+          allowtransparency="true"
+          frameborder="0"></iframe>
+      </div>
+
+      <aside class="space-y-5">
+        <div class="card">
+          <span class="chip chip-gold">Friday</span>
+          <h3 class="font-display text-xl mt-3">Jumuʿah Prayer</h3>
+          <JummahSidebar d={jummah} />
+        </div>
+        <div class="card">
+          <h3 class="font-display text-xl">Calculation Method</h3>
+          <p class="text-slate-600 mt-2">Islamic Society of North America (ISNA) · Fajr 15°, Isha 15°.</p>
+        </div>
+      </aside>
+
+    </div>
+  </section>
+
+  <section class="pb-20">
+    <div class="max-w-5xl mx-auto px-4">
+      <div class="card">
+        <h3 class="font-display text-2xl">Iqamah Schedule</h3>
+        <p class="text-slate-600 mt-2">A summary view of Iqamah times for the next 7 days.</p>
+        <div class="overflow-x-auto mt-5">
+          <table class="w-full text-base">
+            <thead class="text-left text-xs uppercase tracking-widest text-slate-500 border-b border-slate-200">
+              <tr>
+                <th class="py-2 pr-3">Date</th>
+                <th class="py-2 pr-3">Fajr</th>
+                <th class="py-2 pr-3">Zuhr</th>
+                <th class="py-2 pr-3">Asr</th>
+                <th class="py-2 pr-3">Maghrib</th>
+                <th class="py-2">Isha</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100" data-iqamah-week>
+              <tr><td class="py-2.5 pr-3 font-semibold" data-roll-date>Jun 22</td><td>5:45 AM</td><td>2:00 PM</td><td>6:40 PM</td><td>8:42 PM</td><td>10:05 PM</td></tr>
+              <tr><td class="py-2.5 pr-3 font-semibold" data-roll-date>Jun 23</td><td>5:45 AM</td><td>2:00 PM</td><td>6:40 PM</td><td>8:42 PM</td><td>10:05 PM</td></tr>
+              <tr><td class="py-2.5 pr-3 font-semibold" data-roll-date>Jun 24</td><td>5:45 AM</td><td>2:00 PM</td><td>6:40 PM</td><td>8:43 PM</td><td>10:05 PM</td></tr>
+              <tr><td class="py-2.5 pr-3 font-semibold" data-roll-date>Jun 25</td><td>5:45 AM</td><td>2:00 PM</td><td>6:40 PM</td><td>8:43 PM</td><td>10:05 PM</td></tr>
+              <tr><td class="py-2.5 pr-3 font-semibold" data-roll-date>Jun 26</td><td>5:45 AM</td><td>2:00 PM</td><td>6:45 PM</td><td>8:43 PM</td><td>10:05 PM</td></tr>
+              <tr><td class="py-2.5 pr-3 font-semibold" data-roll-date>Jun 27</td><td>5:45 AM</td><td>2:00 PM</td><td>6:45 PM</td><td>8:43 PM</td><td>10:05 PM</td></tr>
+              <tr><td class="py-2.5 pr-3 font-semibold" data-roll-date>Jun 28</td><td>5:45 AM</td><td>2:00 PM</td><td>6:45 PM</td><td>8:43 PM</td><td>10:05 PM</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  import '../scripts/jummah-friday-banner.client.js';
+</script>
+<script>
+  import '../scripts/prayer-times.client.js';
+</script>

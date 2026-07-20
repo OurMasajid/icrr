@@ -5,5 +5,5 @@ node_modules/
 Thumbs.db
 *.log
 
-# Unhashed dev output from `npm run dev` — production build emits hashed files instead
-/styles.css
+dist/
+.astro/

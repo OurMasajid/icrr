@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Topbar from '../components/Topbar.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="About — Islamic Center of Round Rock"
+  description="Learn about ICRR — our vision, mission, Imam, and Shura. Established 2002 in Round Rock, TX."
+  path="about.html"
+>
+  <Topbar />
+  <Nav active="about" />
+
+  <section class="page-header">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="crumbs"><a href="index.html">Home</a> / About</p>
+      <h1 class="font-display text-4xl md:text-5xl font-bold mt-3">About the Islamic Center of Round Rock</h1>
+      <p class="mt-4 max-w-2xl text-emerald-50/90">A community-built masjid serving Round Rock, Texas since 2002 — through prayer, education, and humanitarian service.</p>
+    </div>
+  </section>
+
+  <section class="py-20">
+    <div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-3 gap-10">
+      <div class="lg:col-span-2 prose-block">
+        <span class="section-eyebrow">Our Story</span>
+        <h2 class="section-title">Twenty years of service, by the grace of Allah.</h2>
+        <p class="mt-4">
+          The Islamic Center of Round Rock (ICRR) was established in 2002 as a 501(c)(3) nonprofit organization. What began as a small gathering of families has grown into a thriving community center that hosts daily prayers, weekend schools, family programs, and humanitarian outreach.
+        </p>
+        <p>
+          Today, ICRR serves Muslims across Round Rock, Pflugerville, Hutto, Cedar Park, and the surrounding North Austin area. We are committed to maintaining a welcoming space where every member — regardless of background or madhhab — feels at home.
+        </p>
+        <h3>Our Vision</h3>
+        <p>A vibrant, God-conscious community that radiates the mercy and beauty of Islam to all who live in Round Rock.</p>
+        <h3>Our Mission</h3>
+        <ul class="list-check">
+          <li>Establish and maintain the daily prayers and weekly Jumuʿah in the best way.</li>
+          <li>Educate children and adults in Qurʾān, ʿaqīdah, fiqh, and the prophetic seerah.</li>
+          <li>Strengthen family ties through programs that engage youth, sisters, and elders.</li>
+          <li>Serve our broader community through humanitarian work and partnerships.</li>
+        </ul>
+        <h3>Meet the Imam</h3>
+        <p>
+          Imam Huzaifa studied the traditional Islamic sciences for six years abroad in the city of the Prophet ﷺ, Al Madīnah Al Munawwarah, with many distinguished scholars and professors. He received a diploma in the Arabic Language and a bachelor's degree in Comparative Islamic Law and Legal Philosophy from the Islamic University of Madinah, and also holds a bachelor's degree in Finance from the University of Missouri–St. Louis.
+        </p>
+        <p>
+          His personal specializations and interests include Islamic Theology, History, and Language Acquisition.
+        </p>
+      </div>
+
+      <aside class="space-y-5">
+        <div class="card">
+          <h3 class="font-display text-xl">Imam Huzaifa Hamirani</h3>
+          <p class="text-slate-600 mt-2">Our resident Imam leads daily prayers, gives the weekly khutbah, and provides counsel for marriage, family, and spiritual concerns.</p>
+          <a href="contact.html" class="btn btn-outline mt-4">Contact the Imam</a>
+        </div>
+        <div class="card">
+          <h3 class="font-display text-xl">Shura Members</h3>
+          <p class="text-slate-600 mt-2">The masjid is guided by an elected Shura council that oversees operations, finances, and long-term planning with full transparency.</p>
+          <ul class="list-check mt-4">
+            <li>Annual community meetings</li>
+            <li>Published financials</li>
+            <li>Open Shura office hours</li>
+          </ul>
+        </div>
+        <div class="card bg-brand-soft border-brand">
+          <h3 class="font-display text-xl text-brand-deep">Get Involved</h3>
+          <p class="text-slate-700 mt-2">Volunteers are the backbone of the masjid. Whether you can give an hour a week or a Saturday a month, we'd love to have you.</p>
+          <a href="contact.html" class="btn btn-primary mt-4">Volunteer</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
