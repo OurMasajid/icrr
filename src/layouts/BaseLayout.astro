@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import FloatingDonateButton from '../components/FloatingDonateButton.astro';
 
 interface Props {
   title: string;
@@ -51,5 +52,6 @@ const canonical = path !== undefined ? `https://roundrockmasjid.org/${path}` : u
 </head>
 <body>
 <slot />
+<FloatingDonateButton path={path} />
 </body>
 </html>
