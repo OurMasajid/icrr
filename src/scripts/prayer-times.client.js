@@ -5,6 +5,8 @@
   var MASJID_ID = 'E5AvRnAX';
   var TIMEZONE = 'America/Chicago';
   var RANGE_DAYS = 7;
+  var CACHE_KEY = 'icrr-prayer-times';
+  var CACHE_TTL_MS = 20 * 60 * 1000;
 
   function trim(s) {
     return (s || '').replace(/\s+/g, ' ').trim();
@@ -55,7 +57,30 @@
     };
   }
 
-  async function fetchDays() {
+  // Session-scoped cache so a visitor browsing multiple pages in one visit
+  // (home, prayer-times, ...) doesn't refetch from Masjidal on every page load.
+  function readCache() {
+    try {
+      var raw = sessionStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      var cached = JSON.parse(raw);
+      if (!cached || !cached.days || !cached.fetchedAt) return null;
+      if (Date.now() - cached.fetchedAt > CACHE_TTL_MS) return null;
+      return cached.days;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function writeCache(days) {
+    try {
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify({ days: days, fetchedAt: Date.now() }));
+    } catch (e) {
+      // sessionStorage unavailable (private browsing, quota, etc.) — skip caching
+    }
+  }
+
+  async function fetchDaysFromNetwork() {
     var today = new Date();
     var from = localDateStr(today);
     var to = localDateStr(new Date(today.getTime() + (RANGE_DAYS - 1) * 86400000));
@@ -73,6 +98,15 @@
     (json.data.iqamah || []).forEach(function (i) { iqamahByDate[i.date] = i; });
 
     return json.data.salah.map(function (s) { return buildDay(s, iqamahByDate[s.date]); });
+  }
+
+  async function fetchDays() {
+    var cached = readCache();
+    if (cached) return cached;
+
+    var days = await fetchDaysFromNetwork();
+    writeCache(days);
+    return days;
   }
 
   function fill(sel, val) {
