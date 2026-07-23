@@ -1,53 +1,74 @@
 import { getStore } from '@netlify/blobs';
 
-const WIDGET_URL =
-  'https://timing.athanplus.com/masjid/widgets/embed?theme=3&masjid_id=E5AvRnAX';
+const MASJID_ID = 'E5AvRnAX';
+const TIMEZONE = 'America/Chicago';
+const RANGE_DAYS = 7;
 
 function trim(s) {
   return (s || '').replace(/\s+/g, ' ').trim();
 }
 
-function parseDay(block) {
-  const dateMatch = block.match(
-    /<div class="slider-content">\s*<p>([^<]+)<\/p>\s*<p>([^<]+)<\/p>/
-  );
-  const date = dateMatch ? trim(dateMatch[1]) : null;
-  const hijri = dateMatch ? trim(dateMatch[2]) : null;
+function formatTime(t) {
+  return trim(t).replace(/(\d)(AM|PM)/i, '$1 $2');
+}
 
-  const prayers = {};
-  const rowRe =
-    /<tr[^>]*class="no-border[^"]*"[^>]*>\s*<td>.*?<\/span>\s*([\w]+)\s*<\/td>\s*(?:<td[^>]*class="one-span"[^>]*>\s*<span>([^<]+)<\/span><\/td>\s*<td><b>([^<]+)<\/b><\/td>|<td[^>]*class="cnter-jummah"[^>]*>\s*<span>([^<]+)<\/span><\/td>)/gs;
+function localDateStr(date) {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: TIMEZONE }).format(date);
+}
 
-  let m;
-  while ((m = rowRe.exec(block)) !== null) {
-    const name = trim(m[1]);
-    if (m[4]) {
-      prayers[name] = { starts: trim(m[4]) };
-    } else {
-      prayers[name] = { starts: trim(m[2]), iqamah: trim(m[3]) };
-    }
-  }
+function buildHijri(hijriDate, hijriMonth) {
+  if (!hijriDate || !hijriMonth) return null;
+  const [day, year] = hijriDate.split(',').map((s) => s.trim());
+  if (!day || !year) return null;
+  return `${day} ${hijriMonth}, ${year}`;
+}
+
+function prayer(starts, iqamah) {
+  const result = { starts: formatTime(starts) };
+  if (iqamah) result.iqamah = formatTime(iqamah);
+  return result;
+}
+
+function buildDay(salah, iqamah) {
+  const prayers = {
+    Fajr: prayer(salah.fajr, iqamah && iqamah.fajr),
+    Sunrise: prayer(salah.sunrise, null),
+    Zuhr: prayer(salah.zuhr, iqamah && iqamah.zuhr),
+    Asr: prayer(salah.asr, iqamah && iqamah.asr),
+    Maghrib: prayer(salah.maghrib, iqamah && iqamah.maghrib),
+    Isha: prayer(salah.isha, iqamah && iqamah.isha),
+  };
 
   const jumuah = [];
-  const jumuahRe = /<li><b>([^<]+)<\/b>\s*<p>\s*(.*?)\s*<\/p>\s*<\/li>/gs;
-  while ((m = jumuahRe.exec(block)) !== null) {
-    jumuah.push({ time: trim(m[1]), label: trim(m[2]) });
-  }
+  if (iqamah && iqamah.jummah1) jumuah.push({ time: formatTime(iqamah.jummah1) });
+  if (iqamah && iqamah.jummah2) jumuah.push({ time: formatTime(iqamah.jummah2) });
 
-  return { date, hijri, prayers, jumuah: jumuah.length ? jumuah : undefined };
+  return {
+    date: salah.date,
+    hijri: buildHijri(salah.hijri_date, salah.hijri_month),
+    prayers,
+    jumuah: jumuah.length ? jumuah : undefined,
+  };
 }
 
 export default async () => {
   const store = getStore('prayer-times');
 
-  const res = await fetch(WIDGET_URL);
+  const today = new Date();
+  const from = localDateStr(today);
+  const to = localDateStr(new Date(today.getTime() + (RANGE_DAYS - 1) * 86400000));
+
+  const url = `https://masjidal.com/api/v1/time/range?masjid_id=${MASJID_ID}&from_date=${from}&to_date=${to}`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error(`Masjidal HTTP ${res.status}`);
-  const html = await res.text();
 
-  const items = html.split('carousel-item').slice(1);
-  const days = items.map(parseDay).filter((d) => d.date);
+  const json = await res.json();
+  if (json.status !== 'success' || !json.data?.salah?.length) {
+    throw new Error('Masjidal API returned no data');
+  }
 
-  if (!days.length) throw new Error('Parsed zero days from widget');
+  const iqamahByDate = new Map((json.data.iqamah || []).map((i) => [i.date, i]));
+  const days = json.data.salah.map((s) => buildDay(s, iqamahByDate.get(s.date)));
 
   await store.setJSON('current', {
     days,

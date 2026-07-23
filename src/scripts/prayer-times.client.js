@@ -1,7 +1,7 @@
-/* Live daily prayer times for ICRR — sourced from Masjidal via Netlify function.
-   The function scrapes the Masjidal athanplus widget, caches for 30 min,
-   and returns clean JSON.  The home page custom card and the prayer-times
-   page weekly table both consume this. */
+/* Live daily prayer times for ICRR — sourced from Masjidal's API via Netlify
+   function. The function calls masjidal.com/api/v1/time/range, caches for
+   30 min, and returns clean JSON. The home page custom card and the
+   prayer-times page weekly table both consume this. */
 (function () {
   var API = '/.netlify/functions/prayer-times';
 
