@@ -1,13 +1,79 @@
-/* Live daily prayer times for ICRR — sourced from Masjidal's API via Netlify
-   function. The function calls masjidal.com/api/v1/time/range, caches for
-   30 min, and returns clean JSON. The home page custom card and the
-   prayer-times page weekly table both consume this. */
+/* Live daily prayer times for ICRR — fetched directly from Masjidal's public
+   API (masjidal.com/api/v1/time/range) in the browser. The home page custom
+   card and the prayer-times page weekly table both consume this. */
 (function () {
-  var API = '/.netlify/functions/prayer-times';
+  var MASJID_ID = 'E5AvRnAX';
+  var TIMEZONE = 'America/Chicago';
+  var RANGE_DAYS = 7;
 
-  // Map Masjidal names to our data-attribute keys
-  var NAME_MAP = { Dhuhr: 'Zuhr' };
-  function key(name) { return NAME_MAP[name] || name; }
+  function trim(s) {
+    return (s || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function formatTime(t) {
+    return trim(t).replace(/(\d)(AM|PM)/i, '$1 $2');
+  }
+
+  function localDateStr(date) {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: TIMEZONE }).format(date);
+  }
+
+  function buildHijri(hijriDate, hijriMonth) {
+    if (!hijriDate || !hijriMonth) return null;
+    var parts = hijriDate.split(',').map(function (s) { return s.trim(); });
+    var day = parts[0];
+    var year = parts[1];
+    if (!day || !year) return null;
+    return day + ' ' + hijriMonth + ', ' + year;
+  }
+
+  function prayer(starts, iqamah) {
+    var result = { starts: formatTime(starts) };
+    if (iqamah) result.iqamah = formatTime(iqamah);
+    return result;
+  }
+
+  function buildDay(salah, iqamah) {
+    var prayers = {
+      Fajr: prayer(salah.fajr, iqamah && iqamah.fajr),
+      Sunrise: prayer(salah.sunrise, null),
+      Zuhr: prayer(salah.zuhr, iqamah && iqamah.zuhr),
+      Asr: prayer(salah.asr, iqamah && iqamah.asr),
+      Maghrib: prayer(salah.maghrib, iqamah && iqamah.maghrib),
+      Isha: prayer(salah.isha, iqamah && iqamah.isha)
+    };
+
+    var jumuah = [];
+    if (iqamah && iqamah.jummah1) jumuah.push({ time: formatTime(iqamah.jummah1) });
+    if (iqamah && iqamah.jummah2) jumuah.push({ time: formatTime(iqamah.jummah2) });
+
+    return {
+      date: salah.date,
+      hijri: buildHijri(salah.hijri_date, salah.hijri_month),
+      prayers: prayers,
+      jumuah: jumuah.length ? jumuah : undefined
+    };
+  }
+
+  async function fetchDays() {
+    var today = new Date();
+    var from = localDateStr(today);
+    var to = localDateStr(new Date(today.getTime() + (RANGE_DAYS - 1) * 86400000));
+    var url = 'https://masjidal.com/api/v1/time/range?masjid_id=' + MASJID_ID +
+      '&from_date=' + from + '&to_date=' + to;
+
+    var r = await fetch(url, { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    var json = await r.json();
+    if (json.status !== 'success' || !json.data || !json.data.salah || !json.data.salah.length) {
+      throw new Error('empty');
+    }
+
+    var iqamahByDate = {};
+    (json.data.iqamah || []).forEach(function (i) { iqamahByDate[i.date] = i; });
+
+    return json.data.salah.map(function (s) { return buildDay(s, iqamahByDate[s.date]); });
+  }
 
   function fill(sel, val) {
     document.querySelectorAll(sel).forEach(function (el) { el.textContent = val; });
@@ -40,9 +106,8 @@
 
     var p = day.prayers;
     Object.keys(p).forEach(function (name) {
-      var k = key(name);
-      fill('[data-adhan="' + k + '"]', p[name].starts || '—');
-      fill('[data-iqamah="' + k + '"]', p[name].iqamah || '—');
+      fill('[data-adhan="' + name + '"]', p[name].starts || '—');
+      fill('[data-iqamah="' + name + '"]', p[name].iqamah || '—');
     });
 
     if (day.hijri) {
@@ -71,7 +136,7 @@
       return '<tr>' +
         '<td class="py-2.5 pr-3 font-semibold">' + label + '</td>' +
         '<td>' + ((p.Fajr && p.Fajr.iqamah) || '—') + '</td>' +
-        '<td>' + (((p.Dhuhr && p.Dhuhr.iqamah) || (p.Zuhr && p.Zuhr.iqamah)) || '—') + '</td>' +
+        '<td>' + ((p.Zuhr && p.Zuhr.iqamah) || '—') + '</td>' +
         '<td>' + ((p.Asr && p.Asr.iqamah) || '—') + '</td>' +
         '<td>' + ((p.Maghrib && p.Maghrib.iqamah) || '—') + '</td>' +
         '<td>' + ((p.Isha && p.Isha.iqamah) || '—') + '</td>' +
@@ -118,7 +183,7 @@
     if (days.length < 2) return;
     var today = days[0].prayers;
     var tomorrow = days[1].prayers;
-    var names = ['Fajr', 'Dhuhr', 'Asr', 'Isha'];
+    var names = ['Fajr', 'Zuhr', 'Asr', 'Isha'];
     var changes = [];
 
     names.forEach(function (name) {
@@ -126,7 +191,7 @@
       var m = tomorrow[name];
       if (!t || !m) return;
       if (t.iqamah && m.iqamah && t.iqamah !== m.iqamah) {
-        changes.push({ name: (name === 'Dhuhr' ? 'Zuhr' : name), from: t.iqamah, to: m.iqamah });
+        changes.push({ name: name, from: t.iqamah, to: m.iqamah });
       }
     });
 
@@ -152,14 +217,11 @@
     setDateLabel();
     rollDates();
     try {
-      var r = await fetch(API, { cache: 'no-store' });
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      var data = await r.json();
-      if (!data.days || !data.days.length) throw new Error('empty');
+      var days = await fetchDays();
 
-      applyToday(data.days[0]);
-      buildWeekTable(data.days);
-      checkTomorrowChanges(data.days);
+      applyToday(days[0]);
+      buildWeekTable(days);
+      checkTomorrowChanges(days);
     } catch (e) {
       if (window.console) console.warn('Prayer times: live fetch failed, using fallback.', e);
     } finally {

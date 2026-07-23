@@ -1,13 +1,9 @@
 [build]
   command = "npm run build"
   publish = "dist"
-  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "22"
-
-[functions]
-  node_bundler = "esbuild"
 
 # Security & caching headers
 [[headers]]
@@ -18,11 +14,6 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
-
-[[headers]]
-  for = "/.netlify/functions/prayer-times"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
 
 # Astro content-hashes every bundled CSS/JS file under /_astro/, so it's
 # always safe to cache them forever — a new deploy is served from new URLs.
