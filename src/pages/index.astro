@@ -5,6 +5,7 @@ import Topbar from '../components/Topbar.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import EventCard from '../components/EventCard.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
 import JummahHero from '../components/JummahHero.astro';
 import { getJummah } from '../lib/jummah';
 
@@ -155,6 +156,8 @@ const onHomepage = allEvents
       </div>
     </div>
   </section>
+
+  <NewsletterSignup />
 
   <!-- Welcome / About preview -->
   <section class="py-20">
