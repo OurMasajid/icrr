@@ -5,6 +5,7 @@ import Topbar from '../components/Topbar.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import EventCard from '../components/EventCard.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
 
 const allEvents = await getCollection('events');
 const gallery = allEvents.filter((e) => e.data.section === 'gallery').sort((a, b) => a.data.order - b.data.order);
@@ -54,6 +55,8 @@ const weekly = allEvents.filter((e) => e.data.section === 'weekly').sort((a, b) 
 
     </div>
   </section>
+
+  <NewsletterSignup />
 
   <Footer />
 </BaseLayout>
