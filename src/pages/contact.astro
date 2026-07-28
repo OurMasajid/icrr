@@ -50,37 +50,18 @@ import Footer from '../components/Footer.astro';
       <div class="lg:col-span-3">
         <div class="card">
           <h2 class="font-display text-2xl">Send us a message</h2>
-          <p class="text-slate-600 mt-2">Whether you have a question, need a service, or want to volunteer — we read every message.</p>
-          <form name="contact" method="POST" action="/thank-you.html" data-netlify="true" class="mt-6 grid sm:grid-cols-2 gap-4">
-            <input type="hidden" name="form-name" value="contact" />
-            <div class="sm:col-span-1">
-              <label class="font-medium text-slate-700">Name</label>
-              <input name="name" class="contact-input mt-1.5" type="text" placeholder="Your name" required />
-            </div>
-            <div class="sm:col-span-1">
-              <label class="font-medium text-slate-700">Email</label>
-              <input name="email" class="contact-input mt-1.5" type="email" placeholder="you@example.com" required />
-            </div>
-            <div class="sm:col-span-2">
-              <label class="font-medium text-slate-700">Subject</label>
-              <select name="subject" class="contact-input mt-1.5">
-                <option>General inquiry</option>
-                <option>Volunteer</option>
-                <option>Nikāḥ service</option>
-                <option>Janāzah service</option>
-                <option>Counseling</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div class="sm:col-span-2">
-              <label class="font-medium text-slate-700">Message</label>
-              <textarea name="message" class="contact-input mt-1.5" rows="6" placeholder="How can we help?" required></textarea>
-            </div>
-            <div class="sm:col-span-2 flex items-center justify-between gap-3">
-              <p class="text-xs text-slate-500">We'll never share your information.</p>
-              <button type="submit" class="btn btn-primary">Send message</button>
-            </div>
-          </form>
+          <p class="text-slate-600 mt-2">Whether you have a question or need a service, we read every message. Looking to help out? Fill in the <a class="text-brand font-semibold" href="https://forms.gle/nPvoh2BbAbG11x9h6" target="_blank" rel="noopener">volunteer form</a> instead.</p>
+          <!-- Google Form embed (forms.gle/JBPvjCGpUucdc4nt8). Submissions go
+               straight to the masjid's Google account — no backend needed. -->
+          <iframe
+            title="ICRR contact form"
+            class="w-full mt-6 border-0"
+            height="1100"
+            loading="lazy"
+            src="https://docs.google.com/forms/d/e/1FAIpQLSeTNrnHylw_qHSUopJB2R6Vpx8eBd7WowKwbzCNqlzcvCOpJw/viewform?embedded=true">Loading…</iframe>
+          <p class="text-sm text-slate-500 mt-4">
+            Form not loading? <a class="text-brand font-semibold" href="https://forms.gle/JBPvjCGpUucdc4nt8" target="_blank" rel="noopener">Open it in a new tab</a>.
+          </p>
         </div>
       </div>
 
