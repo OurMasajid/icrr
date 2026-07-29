@@ -208,6 +208,18 @@ a { color: inherit; text-decoration: none; }
   border-color: var(--brand-100);
 }
 
+/* Contact page: the Google Form embed already has generous margins of its own
+   inside the iframe, so on phones the page gutter + card padding stacked on
+   top of that squeezed the form into a very narrow column. Trim the card
+   padding and let the iframe run the full width of the card. */
+@media (max-width: 640px) {
+  .contact-form-card { padding: 1.25rem 0.875rem; }
+  .contact-form-card .contact-form-embed {
+    width: calc(100% + 1.75rem);
+    margin-left: -0.875rem;
+  }
+}
+
 .card-icon {
   width: 48px; height: 48px;
   border-radius: 12px;
