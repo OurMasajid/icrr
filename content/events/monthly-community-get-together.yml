@@ -6,5 +6,5 @@ section: gallery
 schedule: dated
 dates: 2026-08-15
 until: 2026-08-15
-show_on_homepage: false
+show_on_homepage: true
 order: 0
