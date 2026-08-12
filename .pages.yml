@@ -1,5 +1,9 @@
+# Uploads have to land in public/images — Astro only ships what's under
+# public/ into dist/, so an image written to a bare repo-root images/ builds
+# into a broken <img> on the live site. `output` stays /images because that's
+# the URL those files are served from once built.
 media:
-  input: images
+  input: public/images
   output: /images
 
 content:
