@@ -53,6 +53,21 @@ const weekly = allEvents.filter((e) => e.data.section === 'weekly').sort((a, b) 
         {weekly.map((e) => <EventCard ev={e.data} />)}
       </div>
 
+      <!--
+        Flyers pulled live from the ICRR Pinterest board at page load (see
+        src/scripts/pinterest-board.client.js). Starts hidden and is revealed
+        only once at least one pin renders, so a Pinterest outage — or a
+        visitor with JS off — just sees the CMS-managed sections above.
+      -->
+      <div id="pinterestBoardSection" hidden>
+        <h2 class="section-title mt-20">From Our Pinterest Board</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">
+          The latest flyers, straight from <a href="https://www.pinterest.com/akaban01/icrr-events/" target="_blank" rel="noopener noreferrer" class="underline">our Pinterest board</a>.
+        </p>
+        <p id="pinterestBoardStatus" class="sr-only">Loading flyers from Pinterest…</p>
+        <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="pinterestBoardGrid"></div>
+      </div>
+
     </div>
   </section>
 
@@ -63,4 +78,5 @@ const weekly = allEvents.filter((e) => e.data.section === 'weekly').sort((a, b) 
 
 <script>
   import '../scripts/events-sort.client.js';
+  import '../scripts/pinterest-board.client.js';
 </script>
