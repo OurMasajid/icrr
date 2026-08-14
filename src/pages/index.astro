@@ -98,15 +98,15 @@ const onHomepage = allEvents
         method="post"
         name="mc-embedded-subscribe-form"
         target="_blank"
-        class="relative flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-center"
+        class="newsletter-inline relative flex flex-row gap-3 items-center justify-center"
         novalidate
       >
         <label for="mce-EMAIL" class="sr-only">Email Address</label>
-        <input type="email" name="EMAIL" id="mce-EMAIL" class="input sm:w-72" placeholder="Email address" required />
+        <input type="email" name="EMAIL" id="mce-EMAIL" class="input flex-1 min-w-0 sm:flex-none sm:w-72" placeholder="Email address" required />
         <div aria-hidden="true" class="absolute -left-[5000px]">
           <input type="text" name="b_429c5653e3594fe7e421551f5_9d44a9d6af" tabindex="-1" value="" />
         </div>
-        <button type="submit" name="subscribe" class="btn btn-gold whitespace-nowrap">Subscribe</button>
+        <button type="submit" name="subscribe" class="btn btn-gold whitespace-nowrap shrink-0">Subscribe</button>
       </form>
     </div>
   </section>
@@ -306,6 +306,20 @@ const onHomepage = allEvents
 
   <Footer full />
 </BaseLayout>
+
+<style>
+  /* .input is styled for dark backgrounds; this form sits on a light one,
+     so give it a visible border and dark text. */
+  .newsletter-inline .input {
+    background: #fff;
+    color: var(--ink-900);
+    border-color: var(--ink-300);
+  }
+  .newsletter-inline .input:focus {
+    background: #fff;
+    border-color: var(--gold-400);
+  }
+</style>
 
 <script>
   import '../scripts/home.client.js';
