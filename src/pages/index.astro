@@ -5,7 +5,6 @@ import Topbar from '../components/Topbar.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import EventCard from '../components/EventCard.astro';
-import NewsletterSignup from '../components/NewsletterSignup.astro';
 import JummahHero from '../components/JummahHero.astro';
 import { getJummah } from '../lib/jummah';
 
@@ -67,8 +66,6 @@ const onHomepage = allEvents
   <Topbar />
   <Nav active="home" home />
 
-  <NewsletterSignup />
-
   <!-- Hero -->
   <section class="hero">
     <div class="hero-inner max-w-7xl mx-auto px-4 py-10 lg:py-14">
@@ -90,6 +87,27 @@ const onHomepage = allEvents
           </a>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Newsletter signup — simple inline form -->
+  <section class="py-6 bg-ink-soft">
+    <div class="max-w-3xl mx-auto px-4">
+      <form
+        action="https://roundrockmasjid.us12.list-manage.com/subscribe/post?u=429c5653e3594fe7e421551f5&amp;id=9d44a9d6af&amp;f_id=0035a5e0f0"
+        method="post"
+        name="mc-embedded-subscribe-form"
+        target="_blank"
+        class="relative flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-center"
+        novalidate
+      >
+        <label for="mce-EMAIL" class="sr-only">Email Address</label>
+        <input type="email" name="EMAIL" id="mce-EMAIL" class="input sm:w-72" placeholder="Email address" required />
+        <div aria-hidden="true" class="absolute -left-[5000px]">
+          <input type="text" name="b_429c5653e3594fe7e421551f5_9d44a9d6af" tabindex="-1" value="" />
+        </div>
+        <button type="submit" name="subscribe" class="btn btn-gold whitespace-nowrap">Subscribe</button>
+      </form>
     </div>
   </section>
 
