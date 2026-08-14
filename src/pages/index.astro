@@ -5,7 +5,6 @@ import Topbar from '../components/Topbar.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import EventCard from '../components/EventCard.astro';
-import NewsletterSignup from '../components/NewsletterSignup.astro';
 import JummahHero from '../components/JummahHero.astro';
 import { getJummah } from '../lib/jummah';
 
@@ -91,6 +90,28 @@ const onHomepage = allEvents
     </div>
   </section>
 
+  <!-- Newsletter signup — simple inline form -->
+  <section class="py-6 bg-ink-soft">
+    <div class="max-w-3xl mx-auto px-4">
+      <p class="text-center text-slate-600 mb-3">Sign up for our newsletter to get the latest events and announcements.</p>
+      <form
+        action="https://roundrockmasjid.us12.list-manage.com/subscribe/post?u=429c5653e3594fe7e421551f5&amp;id=9d44a9d6af&amp;f_id=0035a5e0f0"
+        method="post"
+        name="mc-embedded-subscribe-form"
+        target="_blank"
+        class="newsletter-inline relative flex flex-row gap-3 items-center justify-center"
+        novalidate
+      >
+        <label for="mce-EMAIL" class="sr-only">Email Address</label>
+        <input type="email" name="EMAIL" id="mce-EMAIL" class="input flex-1 min-w-0 sm:flex-none sm:w-72" placeholder="Email address" required />
+        <div aria-hidden="true" class="absolute -left-[5000px]">
+          <input type="text" name="b_429c5653e3594fe7e421551f5_9d44a9d6af" tabindex="-1" value="" />
+        </div>
+        <button type="submit" name="subscribe" class="btn btn-gold whitespace-nowrap shrink-0">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
   <!-- Prayer Times & Jummah -->
   <section class="py-10">
     <div class="max-w-5xl mx-auto px-4 flex flex-col lg:flex-row justify-center items-start gap-8">
@@ -156,8 +177,6 @@ const onHomepage = allEvents
       </div>
     </div>
   </section>
-
-  <NewsletterSignup />
 
   <!-- Welcome / About preview -->
   <section class="py-20">
@@ -288,6 +307,20 @@ const onHomepage = allEvents
 
   <Footer full />
 </BaseLayout>
+
+<style>
+  /* .input is styled for dark backgrounds; this form sits on a light one,
+     so give it a visible border and dark text. */
+  .newsletter-inline .input {
+    background: #fff;
+    color: var(--ink-900);
+    border-color: var(--ink-300);
+  }
+  .newsletter-inline .input:focus {
+    background: #fff;
+    border-color: var(--gold-400);
+  }
+</style>
 
 <script>
   import '../scripts/home.client.js';
