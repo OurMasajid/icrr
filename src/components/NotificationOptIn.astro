@@ -1,0 +1,69 @@
+---
+// Push-notification opt-in panel.
+//
+// The FCM config is public by design (it ships in every browser bundle), but
+// it isn't committed — set these as environment variables in the Netlify UI.
+// PUBLIC_ is Astro's prefix for build-time values that may reach the client.
+//
+// PUBLIC_FIREBASE_API_KEY             Firebase console → Project settings → General
+// PUBLIC_FIREBASE_AUTH_DOMAIN         ditto
+// PUBLIC_FIREBASE_PROJECT_ID          ditto
+// PUBLIC_FIREBASE_MESSAGING_SENDER_ID ditto
+// PUBLIC_FIREBASE_APP_ID              ditto
+// PUBLIC_FIREBASE_VAPID_KEY           Project settings → Cloud Messaging →
+//                                     Web configuration → Web Push certificates
+//
+// Until every one of them is set the panel renders nothing: a visible "Enable
+// notifications" button that can't mint a token is worse than no button.
+const env = import.meta.env;
+const config = {
+  apiKey: env.PUBLIC_FIREBASE_API_KEY,
+  authDomain: env.PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: env.PUBLIC_FIREBASE_PROJECT_ID,
+  messagingSenderId: env.PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: env.PUBLIC_FIREBASE_APP_ID,
+  vapidKey: env.PUBLIC_FIREBASE_VAPID_KEY,
+};
+const configured = Object.values(config).every(Boolean);
+
+// Where the token is registered and broadcasts are composed. Override with
+// PUBLIC_OURMASAJID_API when testing against a local Our Masajid.
+const apiBase = env.PUBLIC_OURMASAJID_API ?? 'https://ourmasajid.com';
+const slug = 'icrr';
+---
+
+{configured && (
+  <section class="py-16">
+    <div class="max-w-5xl mx-auto px-4">
+      <div
+        class="event-banner flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+        data-push-optin
+        data-push-state="idle"
+        data-slug={slug}
+        data-api-base={apiBase}
+        data-api-key={config.apiKey}
+        data-auth-domain={config.authDomain}
+        data-project-id={config.projectId}
+        data-messaging-sender-id={config.messagingSenderId}
+        data-app-id={config.appId}
+        data-vapid-key={config.vapidKey}
+      >
+        <div>
+          <span class="section-eyebrow" style="color: var(--gold-400)">Never Miss an Update</span>
+          <h2 class="font-display text-2xl md:text-3xl font-bold text-white mt-1">Get notifications on your phone.</h2>
+          <p class="mt-2 text-emerald-50/80 max-w-md">
+            Prayer time changes, upcoming events, and community announcements — delivered straight to your device.
+          </p>
+          <p class="mt-2 text-emerald-50/70 text-sm" data-push-status aria-live="polite"></p>
+        </div>
+        <button type="button" class="btn btn-gold whitespace-nowrap shrink-0" data-push-button>
+          Enable notifications
+        </button>
+      </div>
+    </div>
+  </section>
+)}
+
+<script>
+  import '../scripts/push-subscribe.client.js';
+</script>

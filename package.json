@@ -6,6 +6,9 @@
     "build": "astro build",
     "preview": "astro preview"
   },
+  "dependencies": {
+    "firebase": "^12.13.0"
+  },
   "devDependencies": {
     "astro": "^7.1.2",
     "autoprefixer": "^10.4.20",
