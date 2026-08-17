@@ -12,6 +12,32 @@ are wired into pages via `<script>import '../scripts/foo.client.js'</script>`
 manual hashing/rewriting step. `npm run build` runs `astro build`; `npm run
 dev` runs the Astro dev server.
 
+# Push notifications are sent from Our Masajid, not from here
+
+The homepage's "Get notifications on your phone" panel
+(`src/components/NotificationOptIn.astro`) subscribes visitors to the
+`icrr-all` Firebase Cloud Messaging topic. This site only handles the *opt-in*
+— minting a registration token and handing it to the Our Masajid API, which
+subscribes it to the topic. Composing and sending a broadcast happens in the
+Our Masajid admin at `/admin/icrr/push`; there is no send path in this repo,
+and no Firebase service account here (that's a secret and it lives there).
+
+Three pieces, and they're easy to break independently:
+
+- `public/firebase-messaging-sw.js` — the service worker. Lives in `public/`
+  so it's copied verbatim to the web root; a service worker can only control
+  pages at or below its own path, so it must stay at the root. It's plain JS
+  with **no Firebase SDK import** on purpose — broadcasts are sent as
+  data-only messages, which arrive as ordinary Web Push events it renders
+  itself. That's also what lets a tap open a URL chosen per-message.
+- `src/scripts/push-subscribe.client.js` — the opt-in flow. Imports the
+  Firebase SDK **dynamically**, so the (large) chunk is only fetched when
+  someone actually taps the button. Keep it that way.
+- `PUBLIC_FIREBASE_*` env vars, set in Netlify — see `.env.example`. The panel
+  renders only when all of them are present, so an unconfigured deploy shows
+  nothing instead of a button that can't work. This is why the section is
+  invisible locally unless you set up `.env`.
+
 # Events & Jumu'ah content is CMS-managed — don't hand-edit the cards
 
 Event cards (both the events page's grids and the homepage's
