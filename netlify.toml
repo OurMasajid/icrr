@@ -33,3 +33,20 @@
   to = "https://roundrockmasjid.org/:splat"
   status = 301
   force = true
+
+# Same-origin proxy for the ICRR events Pinterest board feed.
+#
+# Pinterest serves the board RSS without an Access-Control-Allow-Origin
+# header, so the browser blocks a direct fetch() from our origin. A `status =
+# 200` redirect is a Netlify *rewrite*: Netlify fetches the feed server-side
+# and serves the bytes under our own domain, so as far as the browser is
+# concerned it's a same-origin request and CORS never enters into it.
+# Rewrites are free on every plan and don't consume Function invocations.
+#
+# Keep this rule *after* the www→apex redirect above so a www visitor gets
+# normalized to the apex host before this one matches.
+[[redirects]]
+  from = "/api/pinterest-board"
+  to = "https://www.pinterest.com/akaban01/icrr-events.rss"
+  status = 200
+  force = true
