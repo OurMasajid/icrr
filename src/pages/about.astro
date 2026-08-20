@@ -3,6 +3,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Topbar from '../components/Topbar.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+
+// Shura council roster. Members without a role-specific mailbox are reached
+// through the masjid's general inbox.
+const generalEmail = 'contact@roundrockmasjid.org';
+const shura = [
+  { name: 'Br. Haider Iqbal', role: 'President', email: 'president@roundrockmasjid.org' },
+  { name: 'Br. Kashif Siddiqui', role: 'Secretary', email: 'secretary@roundrockmasjid.org' },
+  { name: 'Amir Rauf', role: 'Treasurer', email: generalEmail },
+  { name: 'Yasir Arafath', role: 'Facilities and Programs Chair', email: generalEmail },
+  { name: 'Javeed Aslam', role: 'Event Coordinator', email: generalEmail },
+  { name: 'Ashraf', role: 'Property Management', email: generalEmail },
+];
 ---
 
 <BaseLayout
@@ -64,6 +76,7 @@ import Footer from '../components/Footer.astro';
             <li>Published financials</li>
             <li>Open Shura office hours</li>
           </ul>
+          <a href="#shura" class="btn btn-outline mt-4">Meet the Shura</a>
         </div>
         <div class="card bg-brand-soft border-brand">
           <h3 class="font-display text-xl text-brand-deep">Get Involved</h3>
@@ -71,6 +84,26 @@ import Footer from '../components/Footer.astro';
           <a href="https://forms.gle/nPvoh2BbAbG11x9h6" target="_blank" rel="noopener" class="btn btn-primary mt-4">Volunteer</a>
         </div>
       </aside>
+    </div>
+  </section>
+
+  <section id="shura" class="py-20 bg-ink-soft">
+    <div class="max-w-7xl mx-auto px-4">
+      <span class="section-eyebrow">Our Shura</span>
+      <h2 class="section-title">The council serving the masjid.</h2>
+      <p class="mt-4 max-w-2xl text-slate-600">Reach any member directly by email — or write to <a class="text-brand font-semibold" href={`mailto:${generalEmail}`}>{generalEmail}</a> and we'll route your message to the right person.</p>
+
+      <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {shura.map((member) => (
+          <div class="card">
+            <h3 class="font-display text-xl">{member.name}</h3>
+            <p class="section-eyebrow mt-2">{member.role}</p>
+            <p class="mt-3">
+              <a class="text-brand break-words" href={`mailto:${member.email}`}>{member.email}</a>
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
