@@ -33,10 +33,34 @@ const weekly = allEvents.filter((e) => e.section === 'weekly').sort((a, b) => a.
   <section class="pb-20">
     <div class="max-w-7xl mx-auto px-4">
       <h2 class="section-title">Upcoming Events & Programs</h2>
-      <p class="mt-3 text-slate-600 max-w-2xl">Tap any flyer to view full details.</p>
+      <p
+        class="mt-3 text-slate-600 max-w-2xl"
+        id="eventGalleryIntro"
+        style={gallery.length ? undefined : 'display:none'}
+      >Tap any flyer to view full details.</p>
 
       <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="eventGallery">
         {gallery.map((e) => <EventCard ev={e} />)}
+      </div>
+
+      <!--
+        Shown when nothing is coming up. The grid can empty out two different
+        ways: no dated events survive the build, or events-sort.client.js
+        archives the last one at page load because its date passed since the
+        last deploy. Rendered either way and toggled by that script, so both
+        cases land on the same message instead of a bare heading over a void.
+      -->
+      <div
+        id="eventGalleryEmpty"
+        class="events-empty mt-10"
+        style={gallery.length ? 'display:none' : undefined}
+      >
+        <p class="font-display text-xl">No upcoming events scheduled right now.</p>
+        <p class="mt-2 text-slate-600 max-w-lg mx-auto">
+          Our weekly programs below run year-round — and if you{' '}
+          <a href="#subscribe" class="underline">subscribe to our calendar</a>,
+          new events show up on your phone the moment they're announced.
+        </p>
       </div>
 
       <!-- Previous Events (populated automatically as dated events pass) -->

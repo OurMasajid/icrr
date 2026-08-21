@@ -573,6 +573,19 @@ a { color: inherit; text-decoration: none; }
 }
 
 /*
+ * Stands in for the whole Upcoming grid when nothing is coming up — see
+ * #eventGalleryEmpty in src/pages/events.astro. Deliberately quiet: an empty
+ * calendar is a normal state for a masjid between programs, not an error.
+ */
+.events-empty {
+  border: 1.5px dashed var(--ink-100);
+  border-radius: 1rem;
+  background: var(--ink-50);
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+/*
  * Stands in for a flyer on events that don't have one — Google Calendar events
  * whose organizer attached no image, or whose attachment couldn't be
  * downloaded at build time (see scripts/fetch-calendar.mjs). The fixed
