@@ -38,4 +38,13 @@
     past.forEach(function (c) { pastGallery.appendChild(c); });
     if (pastSection) pastSection.style.display = '';
   }
+
+  // Archiving the last card leaves the grid empty, and a bare heading over
+  // nothing reads as a broken page — swap in the empty-state message. The
+  // build renders both states, so this only has to flip which one shows.
+  var intro = document.getElementById('eventGalleryIntro');
+  var empty = document.getElementById('eventGalleryEmpty');
+  var isEmpty = gallery.querySelectorAll('.event-flyer-card').length === 0;
+  if (intro) intro.style.display = isEmpty ? 'none' : '';
+  if (empty) empty.style.display = isEmpty ? '' : 'none';
 })();

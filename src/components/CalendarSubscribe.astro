@@ -1,0 +1,72 @@
+---
+/**
+ * "Subscribe to our calendar" panel on the events page.
+ *
+ * The same public Google Calendar that feeds the event cards
+ * (scripts/fetch-calendar.mjs) can be subscribed to directly, so a visitor's
+ * own calendar app stays in sync without them checking the site. Three
+ * different links because the three cases genuinely differ:
+ *
+ *   - `render?cid=` opens Google Calendar's "Add calendar?" prompt. Only useful
+ *     to someone already on Google Calendar.
+ *   - `webcal://…/public/basic.ics` is what Apple Calendar and Outlook
+ *     understand — the webcal scheme is what makes them offer to *subscribe*
+ *     (and keep refreshing) rather than import a one-off snapshot.
+ *   - `embed?src=` is a plain read-only web view, for anyone who just wants to
+ *     look without adding anything.
+ *
+ * The ID is public by design — it's the same one in the ICS feed URL — so
+ * there's nothing here that needs to come from an env var.
+ */
+const CALENDAR_ID = 'rsj97g97q6ud471umpr1p8sr5c@group.calendar.google.com';
+const encoded = encodeURIComponent(CALENDAR_ID);
+
+const googleUrl = `https://calendar.google.com/calendar/render?cid=${encoded}`;
+const icalUrl = `webcal://calendar.google.com/calendar/ical/${encoded}/public/basic.ics`;
+const viewUrl = `https://calendar.google.com/calendar/embed?src=${encoded}&ctz=America%2FChicago`;
+---
+
+<section class="py-16" id="subscribe">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="event-banner flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <div>
+        <span class="section-eyebrow" style="color: var(--gold-400)">Never Miss an Event</span>
+        <h2 class="font-display text-2xl md:text-3xl font-bold text-white mt-1">
+          Subscribe to the ICRR calendar.
+        </h2>
+        <p class="mt-2 text-emerald-50/80 max-w-md">
+          Add our calendar to your phone or computer and every event, halaqah, and
+          program shows up automatically — no need to check back here.
+        </p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0">
+        <a href={googleUrl} target="_blank" rel="noopener" class="btn btn-gold whitespace-nowrap">
+          Add to Google Calendar
+        </a>
+        <a href={icalUrl} class="btn btn-on-dark whitespace-nowrap">
+          Apple &amp; Outlook
+        </a>
+      </div>
+    </div>
+    <p class="mt-4 text-center text-sm text-slate-500">
+      Or just <a href={viewUrl} target="_blank" rel="noopener" class="underline">view the full calendar</a>.
+    </p>
+  </div>
+</section>
+
+<style>
+  /*
+   * A light-on-dark outline button. global.css only has .btn-outline, which is
+   * dark-on-light and disappears against the banner gradient. Scoped here
+   * rather than added globally because this is the only place that needs it.
+   */
+  .btn-on-dark {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+  }
+  .btn-on-dark:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+</style>

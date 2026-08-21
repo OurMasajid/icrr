@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Topbar from '../components/Topbar.astro';
 import Nav from '../components/Nav.astro';
@@ -8,13 +7,14 @@ import EventCard from '../components/EventCard.astro';
 import JummahHero from '../components/JummahHero.astro';
 import NotificationOptIn from '../components/NotificationOptIn.astro';
 import { getJummah } from '../lib/jummah';
+import { getAllEvents } from '../lib/events';
 
 const jummah = getJummah();
 
-const allEvents = await getCollection('events');
+const allEvents = await getAllEvents();
 const onHomepage = allEvents
-  .filter((e) => e.data.show_on_homepage)
-  .sort((a, b) => a.data.order - b.data.order);
+  .filter((e) => e.show_on_homepage)
+  .sort((a, b) => a.order - b.order);
 ---
 
 <BaseLayout
@@ -174,7 +174,7 @@ const onHomepage = allEvents
       </div>
 
       <div class="events-preview-scroll">
-        {onHomepage.map((e) => <EventCard ev={e.data} homepage />)}
+        {onHomepage.map((e) => <EventCard ev={e} homepage />)}
       </div>
     </div>
   </section>
