@@ -1,0 +1,32 @@
+---
+// The always-visible way in to push notifications.
+//
+// The opt-in panel only exists at the bottom of the homepage, which is a long
+// scroll away from most visitors; this bell puts the same flow in the header
+// of every page. Tapping it asks the browser for notification permission
+// directly — there's no separate page to visit first.
+//
+// Two variants because the header has two halves: `icon` sits in the desktop
+// nav, `compact` sits beside the hamburger on narrow screens (where the
+// desktop nav is hidden). Both are wired up by the same client script, which
+// keeps every push control on the page in the same state.
+import { pushConfigured } from '../lib/push';
+
+interface Props {
+  variant?: 'icon' | 'compact';
+}
+const { variant = 'icon' } = Astro.props;
+---
+
+{pushConfigured && (
+  <button
+    type="button"
+    class:list={['nav-bell', { 'nav-bell-compact': variant === 'compact' }]}
+    data-push-button
+    aria-label="Enable notifications"
+    title="Enable notifications"
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <span class="nav-bell-dot" aria-hidden="true"></span>
+  </button>
+)}

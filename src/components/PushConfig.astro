@@ -1,0 +1,28 @@
+---
+// The Firebase config, handed to the client script once per page.
+//
+// Rendered by BaseLayout so it's present wherever a push control is — the
+// header bell is on every page, the opt-in panel only on the homepage — and
+// so neither control has to carry the config itself.
+import {
+  pushApiBase,
+  pushConfigured,
+  pushFirebaseConfig,
+  pushSlug,
+} from '../lib/push';
+---
+
+{pushConfigured && (
+  <div
+    hidden
+    data-push-config
+    data-slug={pushSlug}
+    data-api-base={pushApiBase}
+    data-api-key={pushFirebaseConfig.apiKey}
+    data-auth-domain={pushFirebaseConfig.authDomain}
+    data-project-id={pushFirebaseConfig.projectId}
+    data-messaging-sender-id={pushFirebaseConfig.messagingSenderId}
+    data-app-id={pushFirebaseConfig.appId}
+    data-vapid-key={pushFirebaseConfig.vapidKey}
+  />
+)}

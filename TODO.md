@@ -2,8 +2,9 @@
 
 ## Set up push notifications
 
-The homepage's "Get notifications on your phone" panel
-(`src/components/NotificationOptIn.astro`) only renders when every
+The header notification bell (`src/components/NotificationBell.astro`) and
+the homepage's "Get notifications on your phone" panel
+(`src/components/NotificationOptIn.astro`) only render when every
 `PUBLIC_FIREBASE_*` env var below is set — an unconfigured deploy shows
 nothing instead of a broken button. All values are public (they ship in the
 browser bundle) and none are secrets; the service account that actually
