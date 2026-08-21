@@ -38,6 +38,63 @@ Three pieces, and they're easy to break independently:
   nothing instead of a button that can't work. This is why the section is
   invisible locally unless you set up `.env`.
 
+# Event cards come from two places: Google Calendar and YAML
+
+`src/lib/events.ts` exports `getAllEvents()`, which merges both sources into one
+list of cards. Both pages that show events (`src/pages/index.astro` and
+`src/pages/events.astro`) call it; neither calls `getCollection('events')`
+directly any more.
+
+**A YAML event wins a title collision**, because it's the hand-curated version
+with a chosen flyer and chip. That's also the migration path: copy an event into
+the calendar, confirm it looks right, then delete the YAML file.
+
+## The Google Calendar half
+
+`scripts/fetch-calendar.mjs` runs as a **prebuild step** (wired into both `npm
+run dev` and `npm run build`) and writes two gitignored things:
+
+- `.cache/gcal-events.json` — normalized events, read by `src/lib/gcal.ts`.
+- `public/images/gcal/*` — flyer images downloaded from event attachments.
+
+Set `GCAL_CALENDAR_ID` and `GCAL_API_KEY` to enable it (see `.env.example`).
+With neither set the script writes an empty list and exits 0, so the site builds
+from YAML alone — that's what keeps local development working without secrets.
+Note these are deliberately **not** `PUBLIC_`-prefixed: the key is used at build
+time and must never reach the browser bundle.
+
+**Flyers are downloaded, never hotlinked.** A Calendar attachment's `fileUrl` is
+a Drive *viewer page*, not an image, and Google blocks hotlinking Drive files
+from other domains (`uc?export=view` returns 403). So the build machine fetches
+the bytes via the Drive API and the browser only ever loads a same-origin
+`/images/gcal/...` path. This is why the Drive API has to be enabled on the key,
+and why **each attached flyer must also be shared as "Anyone with the link"** —
+making the *calendar* public does not make its *attachments* public.
+
+An event with no usable flyer isn't an error: `EventCard.astro` renders a
+generated date block instead (`.event-flyer-placeholder`). A failed download
+warns and falls back the same way, so one bad attachment never fails a build.
+
+### What an editor can control from inside a Calendar event
+
+Recurring events land in "Weekly Programs" and one-offs in "Upcoming Events &
+Programs". Lines and tags in the event's **description** override that and the
+rest of the card; they're stripped out before anything renders:
+
+- `image:`, `detail:`, `chip:` — override the derived value.
+- `[weekly]` / `[upcoming]` — force the section.
+- `[homepage]` — also show the card in the homepage preview.
+
+Cancelled events, and any title starting `(Suspended)` — a convention already in
+use on this calendar — are skipped.
+
+### The site is static, so the calendar isn't live
+
+Cards are baked in at build time, and nothing in the repo changes when a
+calendar does. `.github/workflows/rebuild.yml` pings a Netlify build hook nightly
+to close that gap; the same hook URL can be opened from a phone to refresh
+immediately after adding an event.
+
 # Events & Jumu'ah content is CMS-managed — don't hand-edit the cards
 
 Event cards (both the events page's grids and the homepage's
@@ -45,7 +102,9 @@ Event cards (both the events page's grids and the homepage's
 homepage and prayer-times page) are not hand-authored markup. They're read at
 build time from:
 
-- `content/events/*.yml` — one file per event/program.
+- `content/events/*.yml` — one file per event/program. (Since the Google
+  Calendar integration above, this is one of *two* sources of event cards —
+  everything below still applies to the YAML half.)
 - `content/jummah.yml` — the single Jumu'ah info record.
 
 These files intentionally live at the repo root (not under `src/content/`) so
@@ -56,7 +115,7 @@ working unchanged for non-developers editing via GitHub login.
 `content/events/`.** No build step is required to see it — `content/events/`
 is wired up as an Astro content collection (`src/content.config.ts`, using
 the `glob()` loader pointed at `../content/events`) and every page that lists
-events calls `getCollection('events')` and renders each entry through
+events calls `getAllEvents()` (see above) and renders each entry through
 `src/components/EventCard.astro`. Don't hand-write `.event-flyer-card`
 markup in a page — add a YAML file instead. Same for the Jumu'ah info:
 `src/lib/jummah.ts` reads `content/jummah.yml` directly (it's a single

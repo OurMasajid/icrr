@@ -15,20 +15,50 @@ let attrs = dateAttrs(ev);
 if (homepage && ev.schedule === 'none' && ev.homepage_day !== undefined) {
   attrs = { 'data-event-day': String(ev.homepage_day) };
 }
+
+// Events sourced from Google Calendar may have no flyer — the organizer didn't
+// attach one, or the attachment couldn't be downloaded at build time. Those get
+// a generated block in place of the image so a mixed grid still reads as one
+// set of cards. See scripts/fetch-calendar.mjs.
+const hasFlyer = Boolean(ev.image);
+
+// On the homepage every card links through to the events page. On the events
+// page a flyer opens full-size, but a generated block has nothing to open — so
+// it renders as a plain div rather than a link to nowhere.
+const linkTo = homepage ? 'events.html' : hasFlyer ? ev.image : null;
+const Wrapper = linkTo ? 'a' : 'div';
+const wrapperProps = linkTo
+  ? { href: linkTo, ...(homepage ? {} : { target: '_blank' }) }
+  : {};
+
+// The generated block leads with the date rather than the title, which already
+// appears directly below it — repeating it would read as a mistake. A perpetual
+// program has no date to show, so it falls back to the title.
+const firstDate = ev.schedule === 'dated' ? ev.dates?.split(',')[0] : undefined;
+const at = firstDate ? new Date(`${firstDate}T12:00:00Z`) : null;
+const part = (options: Intl.DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', ...options }).format(at!);
 ---
 
 <div class="event-flyer-card" {...attrs}>
-  {homepage ? (
-    <a href="events.html" class="event-flyer-img-wrap">
+  <Wrapper
+    class:list={['event-flyer-img-wrap', !hasFlyer && 'event-flyer-placeholder']}
+    {...wrapperProps}
+  >
+    {hasFlyer ? (
       <img src={ev.image} alt={alt} loading="lazy" />
-    </a>
-  ) : (
-    <a href={ev.image} target="_blank" class="event-flyer-img-wrap">
-      <img src={ev.image} alt={alt} loading="lazy" />
-    </a>
-  )}
+    ) : at ? (
+      <>
+        <span class="event-placeholder-month">{part({ month: 'short' }).toUpperCase()}</span>
+        <span class="event-placeholder-day">{part({ day: 'numeric' })}</span>
+        <span class="event-placeholder-weekday">{part({ weekday: 'long' })}</span>
+      </>
+    ) : (
+      <span class="event-placeholder-title font-display">{ev.title}</span>
+    )}
+  </Wrapper>
   <div class="event-flyer-info">
-    <span class={chipClass}>{ev.chip}</span>
+    {ev.chip && <span class={chipClass}>{ev.chip}</span>}
     <h3 class="font-display text-lg mt-2">{ev.title}</h3>
     <p class="text-sm text-slate-500 mt-1">{ev.detail}</p>
   </div>

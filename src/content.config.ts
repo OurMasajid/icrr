@@ -27,7 +27,9 @@ const events = defineCollection({
     .object({
       title: z.string(),
       detail: z.string().default(''),
-      image: z.string(),
+      // Optional: an event with no flyer renders the generated date card
+      // instead (see src/components/EventCard.astro).
+      image: z.string().default(''),
       chip: z.string().default(''),
       chip_style: z.enum(['default', 'gold']).default('default'),
       section: z.enum(['gallery', 'weekly']),

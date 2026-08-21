@@ -8,3 +8,8 @@ Thumbs.db
 
 dist/
 .astro/
+
+# Derived from the Google Calendar by scripts/fetch-calendar.mjs — refetched on
+# every build, so never committed.
+.cache/
+public/images/gcal/

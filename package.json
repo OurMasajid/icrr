@@ -2,9 +2,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview"
+    "dev": "node scripts/fetch-calendar.mjs && astro dev",
+    "build": "node scripts/fetch-calendar.mjs && astro build",
+    "preview": "astro preview",
+    "fetch:calendar": "node scripts/fetch-calendar.mjs"
   },
   "dependencies": {
     "firebase": "^12.13.0"

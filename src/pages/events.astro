@@ -1,15 +1,16 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Topbar from '../components/Topbar.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import EventCard from '../components/EventCard.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
+import CalendarSubscribe from '../components/CalendarSubscribe.astro';
+import { getAllEvents } from '../lib/events';
 
-const allEvents = await getCollection('events');
-const gallery = allEvents.filter((e) => e.data.section === 'gallery').sort((a, b) => a.data.order - b.data.order);
-const weekly = allEvents.filter((e) => e.data.section === 'weekly').sort((a, b) => a.data.order - b.data.order);
+const allEvents = await getAllEvents();
+const gallery = allEvents.filter((e) => e.section === 'gallery').sort((a, b) => a.order - b.order);
+const weekly = allEvents.filter((e) => e.section === 'weekly').sort((a, b) => a.order - b.order);
 ---
 
 <BaseLayout
@@ -35,7 +36,7 @@ const weekly = allEvents.filter((e) => e.data.section === 'weekly').sort((a, b) 
       <p class="mt-3 text-slate-600 max-w-2xl">Tap any flyer to view full details.</p>
 
       <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="eventGallery">
-        {gallery.map((e) => <EventCard ev={e.data} />)}
+        {gallery.map((e) => <EventCard ev={e} />)}
       </div>
 
       <!-- Previous Events (populated automatically as dated events pass) -->
@@ -50,7 +51,7 @@ const weekly = allEvents.filter((e) => e.data.section === 'weekly').sort((a, b) 
       <p class="mt-3 text-slate-600 max-w-2xl">Programs that run every week — open to the whole community.</p>
 
       <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {weekly.map((e) => <EventCard ev={e.data} />)}
+        {weekly.map((e) => <EventCard ev={e} />)}
       </div>
 
       <!--
@@ -70,6 +71,8 @@ const weekly = allEvents.filter((e) => e.data.section === 'weekly').sort((a, b) 
 
     </div>
   </section>
+
+  <CalendarSubscribe />
 
   <NewsletterSignup />
 

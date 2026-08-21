@@ -1,0 +1,38 @@
+# Nightly rebuild, so new Google Calendar events reach the live site.
+#
+# The site is static: event cards are baked in at build time by
+# scripts/fetch-calendar.mjs. Adding an event in Google Calendar therefore
+# changes nothing until Netlify builds again — and nothing in the repo changes
+# when a calendar does, so no push triggers that build. This workflow is what
+# closes the gap.
+#
+# Setup: Netlify → Site configuration → Build & deploy → Build hooks → "Add
+# build hook", then save the generated URL as the NETLIFY_BUILD_HOOK repository
+# secret (Settings → Secrets and variables → Actions).
+#
+# The same URL can be bookmarked and opened from a phone to force an immediate
+# refresh after adding an event, rather than waiting for the nightly run.
+name: Nightly rebuild
+
+on:
+  schedule:
+    # 09:00 UTC — 4am CDT / 3am CST, comfortably outside the hours anyone is
+    # looking at the site. GitHub runs scheduled jobs in UTC and makes no
+    # promise about punctuality under load; a rebuild being late is harmless.
+    - cron: '0 9 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger the Netlify build hook
+        env:
+          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::error::NETLIFY_BUILD_HOOK secret is not set — see this file's header."
+            exit 1
+          fi
+          curl --fail --silent --show-error -X POST -d '{}' "$HOOK"
+          echo "Netlify build triggered."
