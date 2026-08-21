@@ -33,10 +33,33 @@ Three pieces, and they're easy to break independently:
 - `src/scripts/push-subscribe.client.js` — the opt-in flow. Imports the
   Firebase SDK **dynamically**, so the (large) chunk is only fetched when
   someone actually taps the button. Keep it that way.
-- `PUBLIC_FIREBASE_*` env vars, set in Netlify — see `.env.example`. The panel
-  renders only when all of them are present, so an unconfigured deploy shows
-  nothing instead of a button that can't work. This is why the section is
-  invisible locally unless you set up `.env`.
+- `PUBLIC_FIREBASE_*` env vars (below). The panel renders only when **all** of
+  them are present, so an unconfigured deploy shows nothing instead of a button
+  that can't work. This is why the section is invisible locally unless you set
+  up `.env`.
+
+## Environment variables (Firebase)
+
+Set these in Netlify (Site configuration → Environment variables) for
+production, and in a local `.env` for development. Every `.env*` file is
+gitignored, which is why this list lives here rather than in a checked-in
+example file.
+
+| Variable | Where it comes from |
+| --- | --- |
+| `PUBLIC_FIREBASE_API_KEY` | Firebase console → Project settings → General → Your apps → Web app |
+| `PUBLIC_FIREBASE_AUTH_DOMAIN` | same panel |
+| `PUBLIC_FIREBASE_PROJECT_ID` | same panel |
+| `PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | same panel |
+| `PUBLIC_FIREBASE_APP_ID` | same panel |
+| `PUBLIC_FIREBASE_VAPID_KEY` | Project settings → Cloud Messaging → Web configuration → Web Push certificates → "Key pair". Not the same as any VAPID key in the Our Masajid repo. |
+| `PUBLIC_OURMASAJID_API` | Optional. Where registration tokens are sent to be subscribed to the topic; defaults to `https://ourmasajid.com`. Override when testing locally. |
+
+**None of these are secrets.** Astro exposes every `PUBLIC_`-prefixed variable
+to client code, so all of them ship in the browser bundle by design — Firebase
+enforces access through its security rules, not through key secrecy. The
+service account that actually *sends* notifications lives in the Our Masajid
+app, never here.
 
 # Event cards come from two places: Google Calendar and YAML
 
@@ -57,11 +80,19 @@ run dev` and `npm run build`) and writes two gitignored things:
 - `.cache/gcal-events.json` — normalized events, read by `src/lib/gcal.ts`.
 - `public/images/gcal/*` — flyer images downloaded from event attachments.
 
-Set `GCAL_CALENDAR_ID` and `GCAL_API_KEY` to enable it (see `.env.example`).
-With neither set the script writes an empty list and exits 0, so the site builds
-from YAML alone — that's what keeps local development working without secrets.
-Note these are deliberately **not** `PUBLIC_`-prefixed: the key is used at build
-time and must never reach the browser bundle.
+Set `GCAL_CALENDAR_ID` and `GCAL_API_KEY` to enable it. With neither set the
+script writes an empty list and exits 0, so the site builds from YAML alone —
+that's what keeps local development working without secrets.
+
+| Variable | Where it comes from |
+| --- | --- |
+| `GCAL_CALENDAR_ID` | Calendar → Settings for the calendar → Integrate calendar → *Calendar ID*. The calendar needs "Make available to public" enabled. |
+| `GCAL_API_KEY` | Google Cloud console → APIs & Services → Credentials → API key, with **both the Calendar API and the Drive API** enabled and the key restricted to those two. |
+
+These are deliberately **not** `PUBLIC_`-prefixed, unlike the Firebase values
+above: Astro only exposes `PUBLIC_*` to client code, so the plain names keep the
+key server-side, used at build time and never shipped in the browser bundle
+where someone could lift it and burn the quota.
 
 **Flyers are downloaded, never hotlinked.** A Calendar attachment's `fileUrl` is
 a Drive *viewer page*, not an image, and Google blocks hotlinking Drive files

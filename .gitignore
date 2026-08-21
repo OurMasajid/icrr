@@ -1,7 +1,7 @@
 node_modules/
-.env
-.env.*
-!.env.example
+# Every .env variant, the example included — the variables and where to get
+# them are documented in CLAUDE.md instead, so nothing env-shaped is tracked.
+.env*
 .DS_Store
 Thumbs.db
 *.log

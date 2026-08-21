@@ -34,7 +34,9 @@ Where registration tokens are sent to be subscribed to the `icrr-all`
 topic. Defaults to `https://ourmasajid.com`; only override for local
 testing.
 
-For local dev, copy `.env.example` to `.env` and fill in the same values.
+For local dev, create a `.env` with the same values — every `.env*` file is
+gitignored, so there's no example file to copy. The full list of variables and
+where each one comes from is in CLAUDE.md.
 
 ## Move hosting from Netlify to GitHub Pages
 
