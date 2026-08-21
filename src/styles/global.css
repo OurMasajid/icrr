@@ -440,12 +440,78 @@ a { color: inherit; text-decoration: none; }
 .mobile-menu a:hover,
 .mobile-menu a:active { color: var(--brand-700); background: var(--brand-50); }
 
+.nav-mobile-actions { align-items: center; gap: 0.5rem; }
+
 @media (max-width: 900px) {
   .desktop-nav { display: none !important; }
   .menu-toggle  { display: inline-flex !important; }
+  .nav-mobile-actions { display: flex !important; }
 }
 @media (min-width: 901px) {
   .menu-toggle  { display: none !important; }
+  /* Hidden rather than left empty: an empty flex child would still take a
+     justify-between slot and pull the desktop nav away from the right edge. */
+  .nav-mobile-actions { display: none !important; }
+}
+
+/* Push-notification opt-in in the header. Same button in two spots — inside
+   the desktop nav, and beside the hamburger on narrow screens. */
+.nav-bell {
+  position: relative;
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--ink-700);
+  transition: color .15s ease, background-color .15s ease;
+}
+.nav-bell:hover { color: var(--brand-700); background: var(--brand-50); }
+.nav-bell-compact { background: var(--ink-100); color: var(--ink-900); }
+.nav-bell:disabled { opacity: .55; }
+
+/* A gold dot marks the bell as "not turned on yet"; it goes away once the
+   visitor is subscribed, and while the request is in flight. */
+.nav-bell-dot {
+  position: absolute;
+  top: 7px; right: 8px;
+  width: 8px; height: 8px;
+  border-radius: 9999px;
+  background: var(--gold-500);
+  box-shadow: 0 0 0 2px #ffffff;
+}
+.nav-bell-compact .nav-bell-dot { box-shadow: 0 0 0 2px var(--ink-100); }
+.nav-bell:disabled .nav-bell-dot,
+.nav-bell[data-push-on] .nav-bell-dot { display: none; }
+.nav-bell[data-push-on] { color: var(--brand-700); background: var(--brand-50); }
+
+/* Feedback for bells tapped outside the homepage panel, which has nowhere of
+   its own to show a status line. Left-aligned so it can't sit under the
+   floating Donate button. */
+.push-toast {
+  position: fixed;
+  left: 1.25rem;
+  bottom: 1.25rem;
+  bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  max-width: min(26rem, calc(100vw - 2.5rem));
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--ink-900);
+  color: #ffffff;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  box-shadow: 0 18px 40px -18px rgba(15,23,42,.75);
+  opacity: 0;
+  transform: translateY(0.75rem);
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.push-toast.show { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 640px) {
+  /* Clear the floating Donate button, which is taller than it is wide here. */
+  .push-toast { bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
 }
 
 .menu-toggle {

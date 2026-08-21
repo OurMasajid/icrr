@@ -1,52 +1,22 @@
 ---
-// Push-notification opt-in panel.
+// Push-notification opt-in panel on the homepage.
 //
-// The FCM config is public by design (it ships in every browser bundle), but
-// it isn't committed — set these as environment variables in the Netlify UI.
-// PUBLIC_ is Astro's prefix for build-time values that may reach the client.
+// The same flow is one tap away from anywhere via the header bell
+// (`NotificationBell.astro`); this panel is the version with room to explain
+// what subscribing gets you, and it's where status messages are shown.
 //
-// PUBLIC_FIREBASE_API_KEY             Firebase console → Project settings → General
-// PUBLIC_FIREBASE_AUTH_DOMAIN         ditto
-// PUBLIC_FIREBASE_PROJECT_ID          ditto
-// PUBLIC_FIREBASE_MESSAGING_SENDER_ID ditto
-// PUBLIC_FIREBASE_APP_ID              ditto
-// PUBLIC_FIREBASE_VAPID_KEY           Project settings → Cloud Messaging →
-//                                     Web configuration → Web Push certificates
-//
-// Until every one of them is set the panel renders nothing: a visible "Enable
-// notifications" button that can't mint a token is worse than no button.
-const env = import.meta.env;
-const config = {
-  apiKey: env.PUBLIC_FIREBASE_API_KEY,
-  authDomain: env.PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: env.PUBLIC_FIREBASE_PROJECT_ID,
-  messagingSenderId: env.PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: env.PUBLIC_FIREBASE_APP_ID,
-  vapidKey: env.PUBLIC_FIREBASE_VAPID_KEY,
-};
-const configured = Object.values(config).every(Boolean);
-
-// Where the token is registered and broadcasts are composed. Override with
-// PUBLIC_OURMASAJID_API when testing against a local Our Masajid.
-const apiBase = env.PUBLIC_OURMASAJID_API ?? 'https://ourmasajid.com';
-const slug = 'icrr';
+// Which env vars have to be set, and why nothing renders until they all are,
+// lives in `src/lib/push.ts`.
+import { pushConfigured } from '../lib/push';
 ---
 
-{configured && (
+{pushConfigured && (
   <section class="py-16">
     <div class="max-w-5xl mx-auto px-4">
       <div
         class="event-banner flex flex-col md:flex-row md:items-center md:justify-between gap-6"
         data-push-optin
         data-push-state="idle"
-        data-slug={slug}
-        data-api-base={apiBase}
-        data-api-key={config.apiKey}
-        data-auth-domain={config.authDomain}
-        data-project-id={config.projectId}
-        data-messaging-sender-id={config.messagingSenderId}
-        data-app-id={config.appId}
-        data-vapid-key={config.vapidKey}
       >
         <div>
           <span class="section-eyebrow" style="color: var(--gold-400)">Never Miss an Update</span>
@@ -57,13 +27,9 @@ const slug = 'icrr';
           <p class="mt-2 text-emerald-50/70 text-sm" data-push-status aria-live="polite"></p>
         </div>
         <button type="button" class="btn btn-gold whitespace-nowrap shrink-0" data-push-button>
-          Enable notifications
+          <span data-push-button-label>Enable notifications</span>
         </button>
       </div>
     </div>
   </section>
 )}
-
-<script>
-  import '../scripts/push-subscribe.client.js';
-</script>
