@@ -12,6 +12,10 @@ content:
     type: collection
     path: content/events
     format: yaml
+    # Files named gcal-*.yml in here are synced hourly from the ICRR Google
+    # Calendar (see CLAUDE.md and scripts/sync-gcal-events.mjs) — an edit
+    # made here gets overwritten on the next sync. Edit the calendar event
+    # instead, or add a new file (any other name) for a hand-authored card.
     filename: "{title}.yml"
     fields:
       - { name: title, label: "Title", type: string, required: true }

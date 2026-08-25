@@ -1,0 +1,64 @@
+name: Sync events from Google Calendar
+
+# Pulls content/events/gcal-*.yml cards from the ICRR Google Calendar's
+# public iCal feed (see scripts/sync-gcal-events.mjs) and pushes any change
+# straight to main, where Netlify's normal on-push build picks it up.
+#
+# GitHub only supports cron intervals, not a "6am–10pm" window, so this runs
+# every hour and the sync step itself exits early outside that window (in
+# America/Chicago, DST-safe). workflow_dispatch always runs regardless of
+# the hour, for manual testing.
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gcal-events-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check sync window (6am–10pm America/Chicago)
+        if: github.event_name == 'schedule'
+        run: |
+          hour=$(TZ=America/Chicago date +%H)
+          if [ "$hour" -lt 6 ] || [ "$hour" -ge 22 ]; then
+            echo "Outside 6am-10pm America/Chicago (local hour $hour) — skipping."
+            echo "skip=true" >> "$GITHUB_ENV"
+          fi
+
+      - uses: actions/checkout@v4
+        if: env.skip != 'true'
+
+      - uses: actions/setup-node@v4
+        if: env.skip != 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        if: env.skip != 'true'
+        run: npm ci
+
+      - name: Sync events from Google Calendar
+        if: env.skip != 'true'
+        run: npm run sync-gcal-events
+
+      - name: Commit and push if changed
+        if: env.skip != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- 'content/events/gcal-*.yml'
+          if git diff --cached --quiet; then
+            echo "No event changes."
+            exit 0
+          fi
+          git commit -m "chore: sync events from Google Calendar"
+          git push origin HEAD:main
