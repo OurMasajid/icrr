@@ -33,10 +33,10 @@ jobs:
             echo "skip=true" >> "$GITHUB_ENV"
           fi
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         if: env.skip != 'true'
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         if: env.skip != 'true'
         with:
           node-version: 22
