@@ -140,11 +140,12 @@ disappearing from the calendar) and a new card is skipped with a warning
 in the workflow log rather than failing the build.
 
 Recurring calendar events (an `RRULE`) are expanded into one dated card per
-upcoming occurrence within a 90-day lookahead, each its own
+upcoming occurrence within a 10-day lookahead (and a 1-day lookback, so a
+card doesn't vanish the instant it starts), each its own
 `gcal-<uid>-<date>.yml` — there's no `schedule: none` card for these, so a
 perpetual weekly program still meant to show in "Weekly Programs" stays
 hand-authored (see above) rather than calendar-driven. Every synced card
-uses `section: gallery` and `schedule: dated`.
+uses `section: gallery`, `schedule: dated`, and `show_on_homepage: true`.
 
 ## Jumu'ah fields (`content/jummah.yml`)
 

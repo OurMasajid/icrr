@@ -49,8 +49,8 @@ const EVENTS_DIR = path.join(process.cwd(), 'content/events');
 // years-deep calendar history doesn't get walked every hour; anything
 // further out isn't expanded yet — a later run picks it up as it enters the
 // window.
-const PAST_DAYS = 3;
-const FUTURE_DAYS = 90;
+const PAST_DAYS = 1;
+const FUTURE_DAYS = 10;
 
 const DAY_FMT_LOCAL = new Intl.DateTimeFormat('en-US', {
   timeZone: TZ,
@@ -166,9 +166,17 @@ async function resolvePinImage(descriptionHtml, cache) {
     });
     if (res.ok) {
       const html = await res.text();
-      const original = html.match(/https:\/\/i\.pinimg\.com\/originals\/[^\s"'<>)]+/i);
-      const ogImage = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/i);
-      const found = original?.[0] || ogImage?.[1] || null;
+      // Pull the whole <meta property="og:image" ...> tag first, then read
+      // its content= from within that isolated substring — Pinterest's
+      // markup doesn't put content= after property= consistently, so a
+      // single ordered regex misses real pages. A blind page-wide scan for
+      // an i.pinimg.com/originals/ URL was tried before this and is worse:
+      // Pinterest's own UI chrome (icons, avatars) is also served from
+      // /originals/ inside inline CSS, so it can match a generic asset that
+      // has nothing to do with this pin.
+      const metaTag = html.match(/<meta[^>]*\bproperty=["']og:image["'][^>]*>/i);
+      const content = metaTag?.[0].match(/\bcontent=["']([^"']+)["']/i);
+      const found = content?.[1] || null;
       if (found && isPinterestImageHost(found)) image = upgradeSize(found);
     } else {
       console.warn(`  pin fetch ${url} responded ${res.status}`);
@@ -280,6 +288,7 @@ async function main() {
           ? isoDateParts(occ.start, true)
           : `${isoDateParts(occ.start, true)},${isoDateParts(inclusiveEnd(occ.start, occ.end, true), true)}`
         : isoDateParts(occ.start, false),
+      show_on_homepage: true,
     };
 
     const header =
