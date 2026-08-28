@@ -10,6 +10,12 @@ import Footer from '../components/Footer.astro';
   description="Support ICRR's masjid construction, operations, education, and humanitarian programs. Give online, by Zelle, check, or in person — 100% tax-deductible."
   path="donate.html"
 >
+  <Fragment slot="head">
+    <!-- Start of CharityStack Embed -->
+    <script type="text/javascript" defer id="charitystack-embed" data-id="M_sk21LLp6NZ" src="https://prod-donation-elements-b-donationelementsjsfilesb-1m4f4dl6p6b21.s3.us-east-2.amazonaws.com/bundle.js" is:inline></script>
+    <!-- End of CharityStack Embed -->
+  </Fragment>
+
   <Topbar />
   <Nav active="donate" />
 
@@ -30,6 +36,16 @@ import Footer from '../components/Footer.astro';
         <a href="https://us.mohid.co/tx/austin/icrr/masjid/online/donation" target="_blank" rel="noopener" class="btn btn-gold">Donate Now</a>
         <a href="https://us.mohid.co/tx/austin/icrr/masjid/online/donation" target="_blank" rel="noopener" class="btn btn-outline">Setup Monthly Giving</a>
       </div>
+    </div>
+  </section>
+
+  <section class="pb-16">
+    <div class="max-w-3xl mx-auto px-4">
+      <span class="section-eyebrow">Give Online</span>
+      <h2 class="section-title mt-2">Donate Securely, Right Here</h2>
+      <p class="mt-4 text-slate-600">One-time or monthly, by card or bank transfer. Your receipt is emailed to you immediately.</p>
+      <!-- CharityStack donation form — rendered by the embed script in <head> -->
+      <div class="mt-8" data-entity="EMBED_FORM" data-source="CharityStack" id="506bd24e-afe5-4216-b1c0-4e69360366f9"></div>
     </div>
   </section>
 
