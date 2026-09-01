@@ -5,9 +5,12 @@
 // unchanged.
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { fileURLToPath } from 'node:url';
 
-const eventsDir = fileURLToPath(new URL('../content/events', import.meta.url));
+// Handed to the loader as a URL, not a path string: the glob loader resolves
+// `base` through `new URL()`, which reads a Windows path's drive letter as a
+// scheme and throws "The URL must be of scheme file". A file: URL resolves
+// identically on every platform, so local builds work on Windows too.
+const eventsDir = new URL('../content/events/', import.meta.url);
 
 // An unquoted `2026-08-28` in YAML is a timestamp, not a string, so the loader
 // hands us a Date. Pages CMS writes these fields unquoted, which used to fail
