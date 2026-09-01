@@ -55,7 +55,13 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A -- 'content/events/gcal-*.yml'
+          # Scoped to the directory, not a gcal-*.yml glob: a pathspec that
+          # matches no file is a fatal error (exit 128), which broke every run
+          # once the last synced card was removed. The sync script only ever
+          # writes or deletes gcal-prefixed files, so staging the directory
+          # stages exactly the same set, and content/events/ always exists
+          # because .gitkeep holds it.
+          git add -A -- content/events/
           if git diff --cached --quiet; then
             echo "No event changes."
             exit 0
