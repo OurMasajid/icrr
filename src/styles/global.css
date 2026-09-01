@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Author styles — Tailwind's display utilities, and component classes like
+   `.btn` — outrank the browser's own `[hidden] { display: none }`, so an
+   element hidden from script stays stubbornly on screen. Both the push
+   controls (`hideControls()`) and the home-screen prompt hide things by
+   setting `el.hidden`, so make that mean what it says. */
+[hidden] { display: none !important; }
+
 :root {
   --brand-50:  #ecfdf5;
   --brand-100: #d1fae5;
@@ -512,6 +519,108 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 640px) {
   /* Clear the floating Donate button, which is taller than it is wide here. */
   .push-toast { bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* The "you're here often" card (AppPrompt.astro), shown to repeat visitors by
+   visit-prompt.client.js. Bottom-left, like the toast, so it never sits under
+   the floating Donate button; on narrow screens it spans the width and is
+   lifted clear of that button instead. */
+.app-prompt {
+  position: fixed;
+  left: 1.25rem;
+  bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  z-index: 55;
+  width: min(23rem, calc(100vw - 2.5rem));
+  padding: 1.125rem 1.25rem 1rem;
+  border-radius: 1rem;
+  background: #ffffff;
+  border: 1px solid var(--ink-100);
+  box-shadow: 0 24px 48px -20px rgba(15,23,42,.45);
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition: opacity .25s ease, transform .25s ease;
+}
+.app-prompt.show { opacity: 1; transform: translateY(0); }
+
+.app-prompt-close {
+  position: absolute;
+  top: 0.625rem; right: 0.625rem;
+  width: 30px; height: 30px;
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  border-radius: 9999px;
+  color: var(--ink-500);
+  transition: color .15s ease, background-color .15s ease;
+}
+.app-prompt-close:hover { color: var(--ink-900); background: var(--ink-100); }
+
+.app-prompt-eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--gold-600);
+}
+.app-prompt-title {
+  margin-top: 0.125rem;
+  padding-right: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink-900);
+}
+.app-prompt-text {
+  margin-top: 0.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--ink-700);
+}
+
+.app-prompt-ask { margin-top: 0.875rem; }
+.app-prompt-btn {
+  width: 100%;
+  justify-content: center;
+  font-size: 0.9375rem;
+  padding: 0.625rem 1rem;
+}
+.app-prompt-hint {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-500);
+}
+.app-prompt-hint:empty { display: none; }
+
+.app-prompt-foot {
+  margin-top: 0.875rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--ink-100);
+}
+.app-prompt-later {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink-500);
+  transition: color .15s ease;
+}
+.app-prompt-later:hover { color: var(--brand-700); }
+.app-prompt-note {
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--ink-500);
+}
+
+@media (max-width: 640px) {
+  .app-prompt {
+    left: 1rem;
+    width: calc(100vw - 2rem);
+    bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-prompt { transition: opacity .25s ease; transform: none; }
 }
 
 .menu-toggle {
