@@ -1,0 +1,3 @@
+# Keeps content/events/ in the repo when no event cards exist.
+# The directory must exist: src/content.config.ts globs it for the `events`
+# collection, and scripts/sync-gcal-events.mjs readdirSync()s it every run.
