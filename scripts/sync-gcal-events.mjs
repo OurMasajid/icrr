@@ -44,13 +44,22 @@ const TZ = 'America/Chicago'; // Round Rock, TX
 const PREFIX = 'gcal-';
 const EVENTS_DIR = path.join(process.cwd(), 'content/events');
 
-// Only sync occurrences in this window. Anything older is left alone
-// entirely (existing files untouched, never reconsidered for deletion) so a
-// years-deep calendar history doesn't get walked every hour; anything
-// further out isn't expanded yet — a later run picks it up as it enters the
-// window.
+// Only sync occurrences in this window, so a years-deep calendar history
+// doesn't get walked every hour; anything further out isn't expanded yet — a
+// later run picks it up as it enters the window.
 const PAST_DAYS = 1;
 const FUTURE_DAYS = 10;
+
+// How long a card for a past occurrence sticks around before the sync removes
+// it. Cards outlive the PAST_DAYS lookback: once an occurrence falls out of
+// that, the calendar stops re-confirming it, and without a retention rule the
+// file would sit in the repo forever (which is how a stale card survived the
+// switch to the current calendar). Note the site moves a dated card whose day
+// has passed into the "Previous Events" section client-side, so this is also
+// how long a finished event stays visible there — raise it to keep a longer
+// tail, but don't drop it below PAST_DAYS or a card would be deleted while
+// the feed is still re-confirming it, then rewritten on the next run.
+const RETAIN_PAST_DAYS = 1;
 
 const DAY_FMT_LOCAL = new Intl.DateTimeFormat('en-US', {
   timeZone: TZ,
@@ -301,23 +310,41 @@ async function main() {
   }
 
   let deleted = 0;
+  let expired = 0;
+  const now = new Date();
+  const retainFrom = new Date(now.getTime() - RETAIN_PAST_DAYS * 86400000);
+  const windowEnd = new Date(now.getTime() + FUTURE_DAYS * 86400000);
+
   for (const filename of existingGcalFiles()) {
     const key = filename.slice(PREFIX.length).replace(/\.ya?ml$/, '');
     if (seenKeys.has(key)) continue;
 
     const filePath = path.join(EVENTS_DIR, filename);
     const date = localDateOf(filePath);
-    const now = new Date();
-    const windowStart = new Date(now.getTime() - PAST_DAYS * 86400000);
-    const windowEnd = new Date(now.getTime() + FUTURE_DAYS * 86400000);
-    if (date && date >= windowStart && date <= windowEnd) {
+
+    // A card with no readable date is left alone rather than guessed at, and
+    // one dated beyond the lookahead is spared because the expansion never
+    // reached that far — its absence from seenKeys says nothing about whether
+    // it's still on the calendar.
+    if (!date || date > windowEnd) continue;
+
+    // Older than the retention tail: the event happened and is done, so the
+    // card goes. Counted apart from a real deletion because "aged out" and
+    // "pulled from the calendar" are different events to see in the log.
+    if (date < retainFrom) {
       fs.unlinkSync(filePath);
-      deleted++;
+      expired++;
+      continue;
     }
+
+    // Still inside the window the feed covers, yet absent from it — the
+    // occurrence was removed or moved on the calendar.
+    fs.unlinkSync(filePath);
+    deleted++;
   }
 
   console.log(
-    `gcal sync: ${written} written, ${skippedNoImage} skipped (no image), ${deleted} deleted, ${occurrences.length} occurrences in window`,
+    `gcal sync: ${written} written, ${skippedNoImage} skipped (no image), ${deleted} deleted, ${expired} expired, ${occurrences.length} occurrences in window`,
   );
 }
 
