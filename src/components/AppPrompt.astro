@@ -1,0 +1,67 @@
+---
+// The "you're here often — keep us one tap away" card.
+//
+// Rendered (hidden) on every page by BaseLayout, and shown only by
+// `src/scripts/visit-prompt.client.js` once a visitor's *local* history says
+// they're a regular. Everything below is server-rendered rather than built in
+// JS for one specific reason: the push opt-in script binds every
+// `[data-push-button]` it finds when the page is parsed, so the notification
+// button here has to exist by then. That's also why this card doesn't
+// re-implement the opt-in — it borrows it, and the two controls
+// (this button, the header bell) stay in the same state for free.
+//
+// The notification half only renders when push is configured for the deploy
+// (see `src/lib/push.ts`); the install half is always available, since
+// "add to home screen" needs nothing but a manifest.
+import { pushConfigured } from '../lib/push';
+---
+
+<aside
+  class="app-prompt"
+  data-app-prompt
+  hidden
+  aria-labelledby="app-prompt-title"
+>
+  <button
+    type="button"
+    class="app-prompt-close"
+    data-app-prompt-dismiss
+    aria-label="Not now"
+  >
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+
+  <span class="app-prompt-eyebrow">You're here often</span>
+  <h2 id="app-prompt-title" class="app-prompt-title font-display">Keep ICRR one tap away</h2>
+  <p class="app-prompt-text">
+    Add the masjid to your home screen so prayer times open like an app — and
+    hear about time changes, Jumu'ah, and events as they happen.
+  </p>
+
+  <div class="app-prompt-ask" data-app-prompt-install hidden>
+    <button type="button" class="btn btn-primary app-prompt-btn" data-app-prompt-install-button hidden>
+      Add to home screen
+    </button>
+    <p class="app-prompt-hint" data-app-prompt-install-hint hidden></p>
+  </div>
+
+  {pushConfigured && (
+    <div
+      class="app-prompt-ask"
+      data-app-prompt-notify
+      data-push-optin
+      data-push-state="idle"
+      hidden
+    >
+      <button type="button" class="btn btn-outline app-prompt-btn" data-push-button>
+        <span data-push-button-label>Enable notifications</span>
+      </button>
+      <p class="app-prompt-hint" data-push-status aria-live="polite"></p>
+    </div>
+  )}
+
+  <div class="app-prompt-foot">
+    <button type="button" class="app-prompt-later" data-app-prompt-dismiss>Not now</button>
+    <p class="app-prompt-note">Counted on your device only — nothing about your visits is sent anywhere.</p>
+  </div>
+</aside>

@@ -53,6 +53,50 @@ The pieces, and they're easy to break independently:
   deploy shows nothing instead of a button that can't work. This is why
   they're invisible locally unless you set up `.env`.
 
+# The "install us" card only shows to repeat visitors
+
+`src/components/AppPrompt.astro` is the card that asks a visitor to add the
+site to their home screen and turn notifications on. It's rendered (hidden) on
+every page by `BaseLayout.astro`, and `src/scripts/visit-prompt.client.js`
+decides whether anyone ever sees it.
+
+That decision is made from a count of **distinct days visited**, kept in
+`localStorage` under `icrr:visits` — a list of `YYYY-MM-DD` strings plus a
+first-seen date, how many times the card has been shown, and a snooze
+timestamp. There is no identifier, no cookie, and no network call: nothing
+about a visitor's history leaves their device, and clearing site data resets
+it. Keep it that way — this is a nudge, not analytics.
+
+The thresholds are constants at the top of the script: four distinct days in
+the last fortnight, and at least a week since the first visit (a burst of
+curiosity over one weekend doesn't qualify). The card then waits 12 seconds
+before appearing, comes back in a fortnight if it's ignored, in two months if
+it's dismissed, and never after three showings.
+
+The two asks are independent and either one is dropped once it's settled:
+
+- **Install.** Where the browser offers `beforeinstallprompt` (Chrome/Edge,
+  Android) the card gets a real one-tap install button; the event is captured
+  at the top of the script because it fires once and early. Everywhere else —
+  iOS Safari above all, where "Add to Home Screen" only exists in the Share
+  sheet — the card explains the manual route instead of showing a button that
+  can't do anything.
+- **Notifications.** Not a second opt-in flow: the card's button carries
+  `data-push-button` inside a `[data-push-optin]` block, so
+  `push-subscribe.client.js` binds it like the header bell, keeps them in the
+  same state, and writes progress into the card's own status line. This is why
+  the card is server-rendered rather than built in JS — that script binds what
+  it finds at parse time. `visit-prompt.client.js` only watches the block's
+  `data-push-state` to know when to stop asking. On iOS the two asks are
+  really one: Safari exposes no Push API until the site is installed, so the
+  notification half stays hidden there.
+
+One related trap: `global.css` sets `[hidden] { display: none !important }`.
+Tailwind's utilities and component classes like `.btn` outrank the browser's
+own `[hidden]` rule, so without it an element hidden by `el.hidden` — which
+both this script and the push script's `hideControls()` rely on — stays on
+screen.
+
 # Events & Jumu'ah content is CMS-managed — don't hand-edit the cards
 
 Event cards (both the events page's grids and the homepage's
