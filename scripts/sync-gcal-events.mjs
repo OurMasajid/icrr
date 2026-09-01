@@ -35,7 +35,7 @@ import path from 'node:path';
 import ical from 'node-ical';
 import { dump, load } from 'js-yaml';
 
-const CALENDAR_ID = 'rsj97g97q6ud471umpr1p8sr5c@group.calendar.google.com';
+const CALENDAR_ID = 'c_5e493416a3b5a63ff61c225a2ec8fd989e466935463c218fba704ace958d6014@group.calendar.google.com';
 const ICS_URL =
   process.env.GCAL_ICS_URL ||
   `https://calendar.google.com/calendar/ical/${encodeURIComponent(CALENDAR_ID)}/public/basic.ics`;
