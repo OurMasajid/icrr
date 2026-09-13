@@ -80,9 +80,12 @@
     }
   }
 
+  // Fetches from yesterday through RANGE_DAYS-1 days out, so day 0 is
+  // yesterday and day 1 is today — needed to tell whether today is the
+  // first day a new Iqamah time is in effect (see checkTodayChanged).
   async function fetchDaysFromNetwork() {
     var today = new Date();
-    var from = localDateStr(today);
+    var from = localDateStr(new Date(today.getTime() - 86400000));
     var to = localDateStr(new Date(today.getTime() + (RANGE_DAYS - 1) * 86400000));
     var url = 'https://masjidal.com/api/v1/time/range?masjid_id=' + MASJID_ID +
       '&from_date=' + from + '&to_date=' + to;
@@ -213,29 +216,24 @@
     if (best.diff <= 15) best.row.classList.add('upcoming');
   }
 
-  function checkTomorrowChanges(days) {
-    if (days.length < 2) return;
-    var today = days[0].prayers;
-    var tomorrow = days[1].prayers;
+  function diffIqamah(a, b) {
     var names = ['Fajr', 'Zuhr', 'Asr', 'Isha'];
     var changes = [];
-
     names.forEach(function (name) {
-      var t = today[name];
-      var m = tomorrow[name];
+      var t = a[name];
+      var m = b[name];
       if (!t || !m) return;
       if (t.iqamah && m.iqamah && t.iqamah !== m.iqamah) {
         changes.push({ name: name, from: t.iqamah, to: m.iqamah });
       }
     });
+    return changes;
+  }
 
-    if (!changes.length) return;
-
-    var html = '<div class="iqamah-change-alert">' +
+  function renderChangeAlert(changes, variant, icon, title) {
+    var html = '<div class="iqamah-change-alert iqamah-change-alert--' + variant + '">' +
       '<div class="iqamah-change-alert-inner">' +
-      '<p class="iqamah-change-title">' +
-      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
-      'Iqamah times changing tomorrow</p>' +
+      '<p class="iqamah-change-title">' + icon + title + '</p>' +
       '<div class="iqamah-change-list">' +
       changes.map(function (c) {
         return '<span class="iqamah-change-item"><strong>' + c.name + '</strong> ' +
@@ -247,15 +245,38 @@
     if (nav) nav.insertAdjacentHTML('afterend', html);
   }
 
+  var ALERT_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+  var CHECK_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>';
+
+  // days here is [today, tomorrow, ...] — the slice load() passes in.
+  function checkTomorrowChanges(days) {
+    if (days.length < 2) return;
+    var changes = diffIqamah(days[0].prayers, days[1].prayers);
+    if (!changes.length) return;
+    renderChangeAlert(changes, 'tomorrow', ALERT_ICON, 'Iqamah times changing tomorrow');
+  }
+
+  // Compares yesterday to today so a newly-effective Iqamah time is called
+  // out on the one day it's actually new, not silently folded into "today".
+  function checkTodayChanged(yesterday, today) {
+    if (!yesterday || !today) return;
+    var changes = diffIqamah(yesterday.prayers, today.prayers);
+    if (!changes.length) return;
+    renderChangeAlert(changes, 'today', CHECK_ICON, 'Iqamah times changed today');
+  }
+
   async function load() {
     setDateLabel();
     rollDates();
     try {
       var days = await fetchDays();
+      var fromToday = days.slice(1); // drop yesterday, kept only for the diff below
 
-      applyToday(days[0]);
-      buildWeekTable(days);
-      checkTomorrowChanges(days);
+      applyToday(fromToday[0]);
+      buildWeekTable(fromToday);
+      // Inserted last so it lands closest to the nav (most timely first).
+      checkTomorrowChanges(fromToday);
+      checkTodayChanged(days[0], fromToday[0]);
     } catch (e) {
       if (window.console) console.warn('Prayer times: live fetch failed, using fallback.', e);
     } finally {
