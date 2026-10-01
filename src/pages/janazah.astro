@@ -5,8 +5,9 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 
 // Google Form for the lunch headcount (forms.gle/BcJecUvvzvo36WQu9). It asks
-// for family name, adults and kids. Responses go straight to the masjid's
-// Google account — no backend needed, same approach as the contact page.
+// for email, family name, adults and kids. Responses go straight to the
+// masjid's Google account — no backend needed, same approach as the contact
+// page.
 const FORM_SHORT_URL = 'https://forms.gle/BcJecUvvzvo36WQu9';
 const FORM_EMBED_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLSeFWSXIs2_e26krP-5eIbR1FDjlbI18gxFeKy74gDemMdw33Q/viewform?embedded=true';
@@ -132,10 +133,16 @@ const topics = [
       <div class="card contact-form-card">
         <h2 class="font-display text-2xl">Lunch sign-up</h2>
         <p class="text-slate-600 mt-2">One response per family, please — tell us your family name and how many adults and kids are coming. In shā' Allāh, see you on Saturday, October 10.</p>
+        <!-- A cross-origin Google Form can't report its height, so the iframe
+             is sized per breakpoint to fit the whole form — including the
+             "This is a required question" line each field grows on a bad
+             submit — so it never shows its own scrollbar. The form gets taller
+             as it gets narrower; these were measured against the current four
+             questions plus ~30px of slack, so re-measure if questions change. -->
         <iframe
           title="Janazah Workshop lunch sign-up form"
-          class="contact-form-embed w-full mt-6 border-0 max-sm:h-[920px]"
-          height="840"
+          class="contact-form-embed w-full mt-6 border-0 h-[1160px] max-md:h-[1210px] max-[479px]:h-[1290px] max-[359px]:h-[1400px]"
+          height="1160"
           loading="lazy"
           src={FORM_EMBED_URL}>Loading…</iframe>
         <p class="text-sm text-slate-500 mt-4">
