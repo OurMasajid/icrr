@@ -1,0 +1,149 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Topbar from '../components/Topbar.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+// Google Form for the lunch headcount (forms.gle/BcJecUvvzvo36WQu9). It asks
+// for family name, adults and kids. Responses go straight to the masjid's
+// Google account — no backend needed, same approach as the contact page.
+const FORM_SHORT_URL = 'https://forms.gle/BcJecUvvzvo36WQu9';
+const FORM_EMBED_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSeFWSXIs2_e26krP-5eIbR1FDjlbI18gxFeKy74gDemMdw33Q/viewform?embedded=true';
+
+const topics = [
+  'First Steps for Families',
+  'The Austin Muslim Cemetery',
+  'Services & Costs Covered',
+  'Q&A',
+  'Ghusl & Kafan Explained',
+  'Janazah Prayer & Burial',
+];
+---
+
+<BaseLayout
+  title="Janazah Workshop — Islamic Center of Round Rock"
+  description="Community workshop on what to do when a death happens — Saturday, Oct 10, 12–2 PM at ICRR. Lunch for registered participants; please sign up."
+  path="janazah.html"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Event",
+      "name": "Janazah Workshop",
+      "description": "A community workshop on what to do when a death happens: first steps for families, the Austin Muslim Cemetery, services and costs, ghusl and kafan, and the janazah prayer and burial. Lunch for registered participants.",
+      "startDate": "2026-10-10T12:00:00-05:00",
+      "endDate": "2026-10-10T14:00:00-05:00",
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "location": {
+        "@type": "Place",
+        "name": "Islamic Center of Round Rock",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "1951 Hampton Ln",
+          "addressLocality": "Round Rock",
+          "addressRegion": "TX",
+          "postalCode": "78664",
+          "addressCountry": "US"
+        }
+      },
+      "organizer": {
+        "@type": "Organization",
+        "name": "Islamic Center of Round Rock",
+        "url": "https://roundrockmasjid.org"
+      }
+    })} />
+  </Fragment>
+
+  <Topbar />
+  <Nav active="events" />
+
+  <section class="page-header">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="crumbs"><a href="index.html">Home</a> / <a href="events.html">Events</a> / Janazah Workshop</p>
+      <span class="chip chip-gold mt-5">Community Workshop</span>
+      <h1 class="font-display text-4xl md:text-5xl font-bold mt-3">Janazah Workshop</h1>
+      <p class="mt-4 max-w-2xl text-xl text-emerald-50/90 font-display">What to do when a death happens in our community.</p>
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <a href="#register" class="btn btn-gold">Sign up for lunch</a>
+        <span class="text-emerald-50/90 font-semibold">Saturday, October 10 · <span class="whitespace-nowrap">12:00 – 2:00 PM</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16">
+    <div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-5 gap-10">
+
+      <div class="lg:col-span-3">
+        <span class="section-eyebrow">What we will cover</span>
+        <h2 class="section-title">A clear guide for families, before they need it</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Few of us know what to do in the first hours after a loss. Join us to learn the steps and the options, and bring your questions.</p>
+
+        <ol class="mt-8 space-y-3">
+          {topics.map((topic, i) => (
+            <li class="card flex items-center gap-4 !p-4">
+              <span class="card-icon !mb-0 shrink-0 font-display font-bold text-lg" aria-hidden="true">{i + 1}</span>
+              <span class="font-semibold text-lg">{topic}</span>
+            </li>
+          ))}
+        </ol>
+
+        <p class="mt-6 text-slate-600">
+          Learn more about the Austin Muslim Cemetery at{' '}
+          <a class="text-brand font-semibold underline" href="https://www.icgamuslimcemetery.org" target="_blank" rel="noopener">icgamuslimcemetery.org</a>.
+        </p>
+      </div>
+
+      <aside class="lg:col-span-2 space-y-5">
+        <div class="card bg-brand-soft border-brand">
+          <span class="section-eyebrow">When &amp; Where</span>
+          <p class="mt-3 font-semibold text-lg">Saturday, October 10, 2026</p>
+          <p class="text-slate-700">12:00 – 2:00 PM</p>
+          <p class="mt-3 font-semibold">Islamic Center of Round Rock</p>
+          <p class="text-slate-600">1951 Hampton Ln<br />Round Rock, TX 78664</p>
+          <a href="https://maps.google.com/?q=1951+Hampton+Ln+Round+Rock+TX+78664" target="_blank" rel="noopener" class="btn btn-outline mt-4">Get directions</a>
+        </div>
+
+        <div class="card">
+          <span class="section-eyebrow">Hosted by</span>
+          <p class="mt-3 font-display text-xl font-bold">Imam Nur</p>
+          <p class="font-display text-xl font-bold">&amp; Ustadh Amjad</p>
+        </div>
+
+        <div class="card">
+          <span class="section-eyebrow">Lunch</span>
+          <p class="mt-3 text-slate-700">Lunch is served for registered participants. Please sign up below so we can plan food for your family.</p>
+          <a href="#register" class="btn btn-primary mt-4">Register now</a>
+        </div>
+
+        <div class="card">
+          <span class="section-eyebrow">Need help now?</span>
+          <p class="mt-3 text-slate-700">If your family is facing a loss, call the <strong>Janazah line</strong> (9 am – 5 pm):</p>
+          <p class="mt-1"><a class="text-brand font-semibold" href="tel:+15126663389">(512) 666-3389</a></p>
+        </div>
+      </aside>
+
+    </div>
+  </section>
+
+  <section id="register" class="pb-20 scroll-mt-24">
+    <div class="max-w-3xl mx-auto px-4">
+      <div class="card contact-form-card">
+        <h2 class="font-display text-2xl">Lunch sign-up</h2>
+        <p class="text-slate-600 mt-2">One response per family, please — tell us your family name and how many adults and kids are coming. In shā' Allāh, see you on Saturday, October 10.</p>
+        <iframe
+          title="Janazah Workshop lunch sign-up form"
+          class="contact-form-embed w-full mt-6 border-0 max-sm:h-[920px]"
+          height="840"
+          loading="lazy"
+          src={FORM_EMBED_URL}>Loading…</iframe>
+        <p class="text-sm text-slate-500 mt-4">
+          Form not loading? <a class="text-brand font-semibold" href={FORM_SHORT_URL} target="_blank" rel="noopener">Open it in a new tab</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
