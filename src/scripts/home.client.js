@@ -49,25 +49,32 @@
       card.classList.add('today-event');
   });
 
+  function parseISO(s) { return new Date(s + 'T00:00:00'); }
+  function lastDate(card) {
+    if (card.dataset.eventUntil) return parseISO(card.dataset.eventUntil);
+    if (card.dataset.eventDate) {
+      var dates = card.dataset.eventDate.split(',');
+      return parseISO(dates[dates.length - 1]);
+    }
+    return null;
+  }
+
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // A featured-event spotlight is dropped at build time once its date has
+  // passed, but a page built before then still carries it.
+  document.querySelectorAll('[data-featured-event]').forEach(function (el) {
+    var last = lastDate(el);
+    if (last && last < today) el.remove();
+  });
+
   // Sort the homepage events preview soonest-first, same convention as
   // events.html. Past dated cards are dropped from this preview (there's no
   // "Previous Events" section here); undated/recurring cards are left after.
   (function sortEventsPreview() {
-    function parseISO(s) { return new Date(s + 'T00:00:00'); }
-    function lastDate(card) {
-      if (card.dataset.eventUntil) return parseISO(card.dataset.eventUntil);
-      if (card.dataset.eventDate) {
-        var dates = card.dataset.eventDate.split(',');
-        return parseISO(dates[dates.length - 1]);
-      }
-      return null;
-    }
-
     var preview = document.querySelector('.events-preview-scroll');
     if (!preview) return;
-
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
 
     var cards = Array.prototype.slice.call(preview.querySelectorAll('.event-flyer-card'));
     var dated = cards.filter(function (c) { return lastDate(c); });

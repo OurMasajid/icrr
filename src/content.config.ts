@@ -39,6 +39,10 @@ const events = defineCollection({
       until: isoDate(),
       show_on_homepage: z.boolean().default(false),
       homepage_day: z.number().min(0).max(6).optional(),
+      featured: z.boolean().default(false),
+      summary: z.string().optional(),
+      link: z.string().optional(),
+      link_label: z.string().optional(),
       order: z.number().default(0),
     })
     .superRefine((data, ctx) => {
