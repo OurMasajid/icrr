@@ -18,7 +18,11 @@ if (homepage && ev.schedule === 'none' && ev.homepage_day !== undefined) {
 ---
 
 <div class="event-flyer-card" {...attrs}>
-  {homepage ? (
+  {ev.link ? (
+    <a href={ev.link} class="event-flyer-img-wrap">
+      <img src={ev.image} alt={alt} loading="lazy" />
+    </a>
+  ) : homepage ? (
     <a href="events.html" class="event-flyer-img-wrap">
       <img src={ev.image} alt={alt} loading="lazy" />
     </a>

@@ -80,6 +80,26 @@ content:
         options:
           min: 0
           max: 6
+      - name: featured
+        label: "Feature on homepage"
+        type: boolean
+        default: false
+        description: "Show this event as a large spotlight near the top of the homepage (instead of a card in the preview). It disappears on its own once the event's date has passed."
+      - name: summary
+        label: "Featured summary"
+        type: text
+        required: false
+        description: "A sentence or two describing the event, shown only in the homepage spotlight."
+      - name: link
+        label: "Details link"
+        type: string
+        required: false
+        description: 'Where tapping the flyer or the spotlight button goes, e.g. "janazah.html" or a full https:// URL. Leave blank to keep the default.'
+      - name: link_label
+        label: "Details link button text"
+        type: string
+        required: false
+        description: 'Spotlight button text, e.g. "Register now". Defaults to "Learn more".'
       - name: order
         label: "Sort order"
         type: number

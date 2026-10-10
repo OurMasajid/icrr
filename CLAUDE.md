@@ -145,6 +145,15 @@ record, not a list, so it isn't a content collection), and
 - `homepage_day` (0=Sun…6=Sat) — only for `schedule: none` cards shown on the
   homepage; adds the weekday `today-event` highlight glow there (mirrors the
   old `data-event-day` convention).
+- `featured` — show this event as a large spotlight directly under the
+  homepage hero (`src/components/FeaturedEvent.astro`) *instead of* a card in
+  the homepage preview. It drops itself once the event's last date passes —
+  at build time, and in `home.client.js` for a page built earlier.
+  `summary` is the blurb shown only in that spotlight.
+- `link`, `link_label` — optional details page for the event (e.g.
+  `janazah.html`). When set, the card's flyer and the spotlight's button go
+  there instead of to the events page / the flyer image. `link_label` is the
+  spotlight button text (default "Learn more").
 - `order` — lower sorts first in the pre-JS/initial order. The runtime script
   in `src/scripts/events-sort.client.js` / `home.client.js` still re-sorts
   dated cards soonest-first and drops/archives past ones at page load

@@ -5,15 +5,25 @@ import Topbar from '../components/Topbar.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import EventCard from '../components/EventCard.astro';
+import FeaturedEvent from '../components/FeaturedEvent.astro';
 import JummahHero from '../components/JummahHero.astro';
 import NotificationOptIn from '../components/NotificationOptIn.astro';
 import { getJummah } from '../lib/jummah';
+import { lastDate, todayISO } from '../lib/events';
 
 const jummah = getJummah();
 
 const allEvents = await getCollection('events');
+// A featured event gets the spotlight under the hero instead of a card in the
+// preview, so its flyer isn't on the page twice. One whose date has already
+// passed when the site builds is dropped here; home.client.js drops it on a
+// page built earlier.
+const today = todayISO();
+const featured = allEvents
+  .filter((e) => e.data.featured && (lastDate(e.data) ?? today) >= today)
+  .sort((a, b) => a.data.order - b.data.order);
 const onHomepage = allEvents
-  .filter((e) => e.data.show_on_homepage)
+  .filter((e) => e.data.show_on_homepage && !e.data.featured)
   .sort((a, b) => a.data.order - b.data.order);
 ---
 
@@ -90,6 +100,8 @@ const onHomepage = allEvents
       </div>
     </div>
   </section>
+
+  {featured.map((e) => <FeaturedEvent ev={e.data} />)}
 
   <!-- Newsletter signup — simple inline form -->
   <section class="py-6 bg-ink-soft">

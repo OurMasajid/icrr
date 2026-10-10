@@ -1,0 +1,87 @@
+---
+// The homepage spotlight for an event marked `featured: true` in
+// content/events/. Carries the same data-event-* attributes as an event card,
+// so home.client.js can drop it once the date passes on a page built before.
+import type { Event } from '../lib/events';
+import { dateAttrs } from '../lib/events';
+
+interface Props {
+  ev: Event;
+}
+const { ev } = Astro.props;
+
+// With no details page, fall back to the flyer itself, as the events page does.
+const href = ev.link || ev.image;
+const target = ev.link ? {} : { target: '_blank', rel: 'noopener' };
+const alt = `${ev.title} — ${ev.detail}`;
+---
+
+<section class="pt-8 md:pt-10" data-featured-event {...dateAttrs(ev)}>
+  <div class="max-w-7xl mx-auto px-4">
+    <article class="event-banner featured-event">
+      <span class="featured-event-eyebrow section-eyebrow" style="color: var(--gold-400)">Featured Event</span>
+      <div class="featured-event-head">
+        <h2 class="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight">{ev.title}</h2>
+        <p class="mt-2 text-yellow-300 font-semibold">{ev.detail}</p>
+      </div>
+      <a href={href} {...target} class="featured-event-flyer">
+        <img src={ev.image} alt={alt} />
+      </a>
+      <div class="featured-event-body">
+        {ev.summary && <p class="text-emerald-50/90 md:text-lg max-w-xl mb-5">{ev.summary}</p>}
+        <a href={href} {...target} class="btn btn-gold">{ev.link_label || 'Learn more'} →</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  /* Phones: a small flyer beside the title, everything else underneath, so
+     the spotlight doesn't push prayer times a whole screen further down.
+     Wider: the flyer runs the full height beside a vertically centred
+     column. */
+  .event-banner.featured-event {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    grid-template-areas:
+      "eyebrow eyebrow"
+      "flyer   head"
+      "body    body";
+    align-items: center;
+    gap: 1rem 1.25rem;
+    padding: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .event-banner.featured-event {
+      grid-template-columns: 280px minmax(0, 1fr);
+      grid-template-rows: 1fr auto auto auto 1fr;
+      grid-template-areas:
+        "flyer ."
+        "flyer eyebrow"
+        "flyer head"
+        "flyer body"
+        "flyer .";
+      gap: 0 2.5rem;
+      padding: 2rem;
+    }
+    .featured-event-head { margin-top: 0.25rem; }
+    .featured-event-body { margin-top: 1.25rem; }
+  }
+  .featured-event-eyebrow { grid-area: eyebrow; }
+  .featured-event-flyer {
+    grid-area: flyer;
+    display: block;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.6);
+  }
+  .featured-event-flyer img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease;
+  }
+  .featured-event-flyer:hover img { transform: scale(1.03); }
+  .featured-event-head { grid-area: head; }
+  .featured-event-body { grid-area: body; }
+</style>
