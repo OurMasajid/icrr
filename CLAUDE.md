@@ -164,41 +164,41 @@ The content collection schema (`src/content.config.ts`) validates
 filename if something's missing or malformed — better to catch a bad CMS
 entry at build time than ship broken markup.
 
-## Some event cards are synced from Google Calendar, not hand-authored
+## Some event cards are synced from Our Masajid, not hand-authored
 
-`content/events/gcal-*.yml` files are **generated**, not edited by hand — a
-scheduled GitHub Actions workflow
-(`.github/workflows/gcal-events-sync.yml`, hourly 6am–10pm America/Chicago)
-runs `scripts/sync-gcal-events.mjs`, which pulls the ICRR Google Calendar's
-public iCal feed and writes/updates/deletes these files to match it, then
-commits straight to `main`. Netlify's normal on-push build picks the commit
-up like any other. The prefix is load-bearing: it's how the script tells
-"mine, safe to overwrite or delete" apart from every hand-authored file in
-the same directory, which it never touches. **To change a synced card,
-edit the calendar event, not the YAML file** — the next hourly run
-overwrites it anyway.
+ICRR's events are managed in the Our Masajid admin
+(`https://ourmasajid.com/admin/icrr/events`), not in this repo and no longer
+on Google Calendar. `content/events/om-*.yml` files are **generated**, not
+edited by hand — a scheduled GitHub Actions workflow
+(`.github/workflows/ourmasajid-events-sync.yml`, hourly 6am–10pm
+America/Chicago) runs `scripts/sync-ourmasajid-events.mjs`, which reads Our
+Masajid's public events feed (`/api/masajid/icrr/events`) and
+writes/updates/deletes these files to match it, then commits straight to
+`main`. Netlify's normal on-push build picks the commit up like any other.
+The prefix is load-bearing: it's how the script tells "mine, safe to
+overwrite or delete" apart from every hand-authored file in the same
+directory, which it never touches. **To change a synced card, edit the event
+in Our Masajid, not the YAML file** — the next hourly run overwrites it
+anyway. (Legacy `gcal-*.yml` files from the old Google Calendar sync count
+as the script's own too, so it clears any that are left.)
 
-A calendar event only becomes a card if its description contains a
-Pinterest link (a `pinterest.com/pin/...` or `pin.it/...` URL, or a direct
-`i.pinimg.com` image URL) — the schema's `image` field is required, and this
-is the only source of it for synced cards. The script fetches that link
-once per run to read the pin's `og:image` (the same signal
-`src/scripts/pinterest-board.client.js` gets for free from Pinterest's RSS)
-and hotlinks the resulting `i.pinimg.com` URL directly, the same way the
-Pinterest board embed does — nothing is downloaded into `public/images`.
-Pinterest doesn't always render that tag server-side for every pin/link
-shape; when resolution fails, an already-published card is left alone
-rather than deleted (a scrape miss isn't the same as the event actually
-disappearing from the calendar) and a new card is skipped with a warning
-in the workflow log rather than failing the build.
+Repeating events (weekly programs, "the 3rd Saturday" potlucks) are set up
+once in Our Masajid, which expands them into one entry per date. The script
+turns each entry inside a 10-day lookahead (and a 1-day lookback, so a card
+doesn't vanish the instant it starts) into its own `om-<id>.yml` card, using
+the feed's preformatted date/time labels for the `detail` line — there's no
+`schedule: none` card for these, so a perpetual program still meant to show
+in "Weekly Programs" stays hand-authored (see above). Every synced card uses
+`section: gallery`, `schedule: dated`, and `show_on_homepage: true`.
 
-Recurring calendar events (an `RRULE`) are expanded into one dated card per
-upcoming occurrence within a 10-day lookahead (and a 1-day lookback, so a
-card doesn't vanish the instant it starts), each its own
-`gcal-<uid>-<date>.yml` — there's no `schedule: none` card for these, so a
-perpetual weekly program still meant to show in "Weekly Programs" stays
-hand-authored (see above) rather than calendar-driven. Every synced card
-uses `section: gallery`, `schedule: dated`, and `show_on_homepage: true`.
+An event becomes a card only if it has a banner image in Our Masajid — the
+schema's `image` field is required — and the card hotlinks that URL as-is
+(R2 for images uploaded in the admin; Pinterest for the flyers carried over
+from the calendar). An event without one is skipped with a warning in the
+workflow log. If the feed can't be fetched the run fails without touching
+any file, so an Our Masajid outage leaves the current cards up rather than
+emptying the site. `PUBLIC_OURMASAJID_API` (the same variable the push
+opt-in uses) points the script at a local Our Masajid for testing.
 
 ## Jumu'ah fields (`content/jummah.yml`)
 

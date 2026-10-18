@@ -1,7 +1,7 @@
-name: Sync events from Google Calendar
+name: Sync events from Our Masajid
 
-# Pulls content/events/gcal-*.yml cards from the ICRR Google Calendar's
-# public iCal feed (see scripts/sync-gcal-events.mjs) and pushes any change
+# Pulls content/events/om-*.yml cards from Our Masajid's public events feed
+# for ICRR (see scripts/sync-ourmasajid-events.mjs) and pushes any change
 # straight to main, where Netlify's normal on-push build picks it up.
 #
 # GitHub only supports cron intervals, not a "6am–10pm" window, so this runs
@@ -17,7 +17,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: gcal-events-sync
+  group: ourmasajid-events-sync
   cancel-in-progress: false
 
 jobs:
@@ -46,19 +46,19 @@ jobs:
         if: env.skip != 'true'
         run: npm ci
 
-      - name: Sync events from Google Calendar
+      - name: Sync events from Our Masajid
         if: env.skip != 'true'
-        run: npm run sync-gcal-events
+        run: npm run sync-events
 
       - name: Commit and push if changed
         if: env.skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Scoped to the directory, not a gcal-*.yml glob: a pathspec that
+          # Scoped to the directory, not an om-*.yml glob: a pathspec that
           # matches no file is a fatal error (exit 128), which broke every run
           # once the last synced card was removed. The sync script only ever
-          # writes or deletes gcal-prefixed files, so staging the directory
+          # writes or deletes om- (and legacy gcal-) files, so staging the directory
           # stages exactly the same set, and content/events/ always exists
           # because .gitkeep holds it.
           git add -A -- content/events/
@@ -66,5 +66,5 @@ jobs:
             echo "No event changes."
             exit 0
           fi
-          git commit -m "chore: sync events from Google Calendar"
+          git commit -m "chore: sync events from Our Masajid"
           git push origin HEAD:main
